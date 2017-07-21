@@ -19,7 +19,7 @@ def pull(chat_id, args = None):
         print("Cannot pull without Filepath!")
     else:
         bot.sendMessage(chat_id, "Pulling..")
-        call("cd ~/git/telegram_status_bot && git pull", shell=True)
+        call("cd "+filePath+" && git pull", shell=True)
         bot.sendMessage(chat_id, "Finished!")
     
 def restart(chat_id, args = None):
@@ -51,7 +51,7 @@ def handle(msg):
     
     if not str(chat_id) in admins:
         print("Message from unknown User!")
-        bot.sendMessage("I'm sorry, but my Daddy says im not allowed to speak to strangers!")
+        bot.sendMessage("I'm sorry, but my Daddy says im not allowed to speak to Strangers!")
         return
         
     msgArgs = msg['text'].split(' ')
