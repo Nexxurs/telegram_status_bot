@@ -24,12 +24,12 @@ def handle(msg):
         bot.sendMessage(chat_id, "Finished!")
     elif(msg['text'] == "/restart"):
         bot.sendMessage(chat_id, "Restarting... ")
-        t = Thread(restartSoon)
+        t = Thread(target = restartSoon)
         t.start()
     else:
         bot.sendMessage(chat_id, "wat?")
 
-        
+
 
 config = configparser.ConfigParser()
 config.read("/home/pi/git/telegram_status_bot/config.ini")
