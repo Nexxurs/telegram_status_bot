@@ -15,6 +15,7 @@ def handle(msg):
     if(msg['text'] == "/pull"):
         bot.sendMessage(chat_id, "Pulling..")
         call("cd ~/git/telegram_status_bot && git pull", shell=True)
+        bot.sendMessage(chat_id, "Finished!")
     elif(msg['text'] == "/restart"):
         bot.sendMessage(chat_id, "Restarting... ")
         os.execv(sys.executable, ['python']+sys.argv)
