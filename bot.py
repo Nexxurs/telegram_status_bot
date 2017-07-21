@@ -1,5 +1,7 @@
 import configparser
 import telepot
+from telepot.loop import MessageLoop
+import time
 
 
 def handle(msg):
@@ -17,4 +19,9 @@ token = str(token)
 
 bot = telepot.Bot(token)
 
+MessageLoop(bot, handle).run_as_thread()
+print ('Listening ...')
 
+# Keep the program running.
+while 1:
+    time.sleep(10)
