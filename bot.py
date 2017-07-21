@@ -41,7 +41,6 @@ bot = telepot.Bot(token)
 
 MessageLoop(bot, handle).run_as_thread()
 print ('Listening ...')
-print(sys.executable)
 
 # Keep the program running.
 while 1:
