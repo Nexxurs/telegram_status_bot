@@ -6,11 +6,12 @@ import time
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-    print(content_type, chat_type, chat_id)
+    print(content_type, chat_type, chat_id, msg['text'])
 
     if(msg['text'] == "pull"):
-        bot.sendMessage(chat_id, "Pulling.. "+chat_id)
-
+        bot.sendMessage(chat_id, "Pulling.. "+str(chat_id))
+    else:
+        bot.sendMessage("wat?")
 config = configparser.ConfigParser()
 config.read("/home/pi/git/telegram_status_bot/config.ini")
 
