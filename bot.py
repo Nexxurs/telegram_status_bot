@@ -3,13 +3,21 @@ import telepot
 from telepot.loop import MessageLoop
 import time
 
+from subprocess import call
+import sys
+import os
+
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
     print(content_type, chat_type, chat_id, msg['text'])
 
-    if(msg['text'] == "pull"):
-        bot.sendMessage(chat_id, "Pulling.. "+str(chat_id))
+    if(msg['text'] == "/pull"):
+        bot.sendMessage(chat_id, "Pulling..")
+        call("cd ~/git/telegram_status_bot && git pull", shell=True)
+    elif(msg['text'] == "/restart"):
+        bot.sendMessage(chat_id, "Restarting... ")
+        os.execv(sys.executable, ['python']+sys.argv)
     else:
         bot.sendMessage(chat_id, "wat?")
 config = configparser.ConfigParser()
