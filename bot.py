@@ -7,6 +7,12 @@ from subprocess import call
 import sys
 import os
 
+from threading import Thread
+from time import sleep
+
+def restartSoon():
+    sleep(1)
+    os.execv(sys.executable, ['python'] + sys.argv)
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -18,9 +24,13 @@ def handle(msg):
         bot.sendMessage(chat_id, "Finished!")
     elif(msg['text'] == "/restart"):
         bot.sendMessage(chat_id, "Restarting... ")
-        os.execv(sys.executable, ['python']+sys.argv)
+        t = Thread(restartSoon)
+        t.start()
     else:
         bot.sendMessage(chat_id, "wat?")
+
+        
+
 config = configparser.ConfigParser()
 config.read("/home/pi/git/telegram_status_bot/config.ini")
 
@@ -31,6 +41,7 @@ bot = telepot.Bot(token)
 
 MessageLoop(bot, handle).run_as_thread()
 print ('Listening ...')
+print(sys.executable)
 
 # Keep the program running.
 while 1:
