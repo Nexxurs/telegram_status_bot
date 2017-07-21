@@ -11,7 +11,7 @@ def handle(msg):
     if(msg['text'] == "pull"):
         bot.sendMessage(chat_id, "Pulling.. "+str(chat_id))
     else:
-        bot.sendMessage("wat?")
+        bot.sendMessage(chat_id, "wat?")
 config = configparser.ConfigParser()
 config.read("/home/pi/git/telegram_status_bot/config.ini")
 
