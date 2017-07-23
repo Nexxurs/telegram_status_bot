@@ -2,7 +2,6 @@ import subprocess
 import sys
 import os
 from threading import Thread
-from pygit2 import Repository
 from time import sleep
 
 filePath = os.path.dirname(os.path.realpath(__file__))
@@ -24,8 +23,8 @@ def getFilePath():
 
 def getGitBranch():
     try:
-        repo = Repository(filePath + "/.git")
-        return repo.head.shorthand
+        out, err = _execute("cd "+filePath+" && git branch")
+        return out
     except Exception as e:
         return None
 
