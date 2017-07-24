@@ -23,10 +23,16 @@ def getFilePath():
 
 def getGitBranch():
     try:
-        out, err = _execute("cd "+filePath+" && git branch")
+        out, err = _execute("cd " + filePath + " && git branch")
         return out
     except Exception as e:
         return None
+
+
+def sendAdmins(msg, except_this=''):
+    for admin in admins:
+        if admin != except_this and len(admin) > 0:
+            bot.sendMessage(admin, msg)
 
 
 def pull(chat_id, args=None):
@@ -39,16 +45,16 @@ def pull(chat_id, args=None):
 
     if len(args) > 1:
         # TODO Checkout new Branch!
-        print("New Branch: "+args[1])
+        print("New Branch: " + args[1])
         out, err = _execute("cd " + filePath + " && git pull")
     else:
         out, err = _execute("cd " + filePath + " && git pull")
 
-    if len(err)>0:
-        result = "ERROR:\n"+err
+    if len(err) > 0:
+        result = "ERROR:\n" + err
     else:
         result = out
-    bot.sendMessage(chat_id, result+"\nTask finished!")
+    bot.sendMessage(chat_id, result + "\nTask finished!")
 
 
 def restart(chat_id, args=None):
@@ -61,10 +67,7 @@ def restart(chat_id, args=None):
 
     bot.sendMessage(chat_id, "Restarting... ")
 
-    for admin in admins:
-        if admin != chat_id:
-            print("Debug: Admin ID: " + admin + ", chat_id: " + chat_id)
-            bot.sendMessage(admin, "Just fyi: Someone ordered me to restart!")
+    sendAdmins("Just fyi: Someone ordered me to restart!", chat_id)
 
     t = Thread(target=restart_soon)
     t.start()

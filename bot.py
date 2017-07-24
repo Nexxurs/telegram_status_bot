@@ -85,8 +85,7 @@ if __name__ == '__main__':
     print('Listening ...')
 
     # Say Hello to our Admins!
-    for admin in admins:
-        bot.sendMessage(admin, "Hello, im Back!")
+    helper.sendAdmins("I'm Back!")
 
     # Keep the program running.
     while 1:
