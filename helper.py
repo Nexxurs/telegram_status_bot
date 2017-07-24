@@ -57,13 +57,14 @@ def pull(chat_id, args=None):
     bot.sendMessage(chat_id, result + "\nTask finished!")
 
 
+def restart_soon():
+        sleep(1)
+        os.execv(sys.executable, ['python'] + sys.argv)
+
+
 def restart(chat_id, args=None):
     if bot is None:
         raise ReferenceError("Cannot use Function without Bot Context!")
-
-    def restart_soon():
-        sleep(1)
-        os.execv(sys.executable, ['python'] + sys.argv)
 
     bot.sendMessage(chat_id, "Restarting... ")
 
@@ -71,3 +72,4 @@ def restart(chat_id, args=None):
 
     t = Thread(target=restart_soon)
     t.start()
+

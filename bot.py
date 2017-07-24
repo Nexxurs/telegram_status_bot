@@ -1,9 +1,13 @@
-import configparser
-import telepot
-from telepot.loop import MessageLoop
-from time import sleep
 import helper
-from sys import exit
+try:
+    import configparser
+    import telepot
+    from telepot.loop import MessageLoop
+    from time import sleep
+    from sys import exit
+except ImportError:
+    helper.restart_soon()
+
 
 _VERSION = 0.1
 
