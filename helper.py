@@ -61,7 +61,7 @@ def restart_soon():
     print("First Part: "+sys.executable)
     print("Second Part: "+str(['python'] + sys.argv))
     sleep(1)
-    os.execv(sys.executable, ['python'] + sys.argv)
+    os.execv(sys.executable, [sys.executable] + sys.argv)
 
 
 def restart(chat_id, args=None):
