@@ -48,7 +48,7 @@ def handle(msg):
 
     if not chat_id in admins:
         print("Message from unknown User!")
-        bot.sendMessage("I'm sorry, but my Daddy says im not allowed to speak to Strangers!")
+        bot.sendMessage(chat_id, "I'm sorry, but my Daddy says im not allowed to speak to Strangers!")
         return
 
     msgArgs = msg['text'].split(' ')
