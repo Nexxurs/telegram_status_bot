@@ -51,15 +51,17 @@ def pull(chat_id, args=None):
         out, err = _execute("cd " + filePath + " && git pull")
 
     if len(err) > 0:
-        result = "ERROR:\n" + err
+        result = out+"\n\nERROR:\n" + err
     else:
         result = out
     bot.sendMessage(chat_id, result + "\nTask finished!")
 
 
 def restart_soon():
-        sleep(1)
-        os.execv(sys.executable, ['python'] + sys.argv)
+    print("First Part: "+sys.executable)
+    print("Second Part: "+str(['python'] + sys.argv))
+    sleep(1)
+    os.execv(sys.executable, ['python'] + sys.argv)
 
 
 def restart(chat_id, args=None):
