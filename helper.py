@@ -54,12 +54,10 @@ def pull(chat_id, args=None):
         result = out+"\n\nERROR:\n" + err
     else:
         result = out
-    bot.sendMessage(chat_id, result + "\nTask finished!")
+    bot.sendMessage(chat_id, result + "\nTask finished! Please /restart for the Changes to work!")
 
 
 def restart_soon():
-    print("First Part: "+sys.executable)
-    print("Second Part: "+str(['python'] + sys.argv))
     sleep(1)
     os.execv(sys.executable, [sys.executable] + sys.argv)
 
