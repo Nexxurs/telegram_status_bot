@@ -45,8 +45,8 @@ def pull(chat_id, args=None):
 
     if len(args) > 1:
         # TODO Checkout new Branch!
-        print("New Branch: " + args[1])
-        out, err = _execute("cd " + filePath + " && git pull")
+        branch = args[1]
+        out, err = _execute("cd " + filePath + " && git checkout "+branch)
     else:
         out, err = _execute("cd " + filePath + " && git pull")
 
