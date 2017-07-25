@@ -3,10 +3,16 @@ import sys
 import os
 from threading import Thread
 from time import sleep
+from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
+import telepot
 
 filePath = os.path.dirname(os.path.realpath(__file__))
 bot = None
 admins = []
+
+restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="Restart now", callback_data="restart"),
+     InlineKeyboardButton(text="Restart later", callback_data="None")]])
 
 
 def _execute(cmd):
@@ -22,17 +28,15 @@ def getFilePath():
 
 
 def getGitBranch():
-    try:
-        out, err = _execute("cd " + filePath + " && git branch")
-        return out
-    except Exception as e:
-        return None
+    out, err = _execute("cd " + filePath + " && git symbolic-ref HEAD")
+    l = out.split('/')
+    return '/'.join(l[2:]).strip()
 
 
-def sendAdmins(msg, except_this=''):
+def send_admins(msg, except_this='', silent=False):
     for admin in admins:
         if admin != except_this and len(admin) > 0:
-            bot.sendMessage(admin, msg)
+            bot.sendMessage(admin, msg, disable_notification=silent)
 
 
 def pull(chat_id, args=None):
@@ -44,17 +48,16 @@ def pull(chat_id, args=None):
         raise ReferenceError("Cannot use Function without Bot Context!")
 
     if len(args) > 1:
-        # TODO Checkout new Branch!
         branch = args[1]
-        out, err = _execute("cd " + filePath + " && git checkout "+branch)
+        out, err = _execute("cd " + filePath + " && git checkout " + branch + " && git pull")
     else:
         out, err = _execute("cd " + filePath + " && git pull")
 
     if len(err) > 0:
-        result = out+"\n\nERROR:\n" + err
+        result = err + "\n\n" + out
     else:
         result = out
-    bot.sendMessage(chat_id, result + "\nTask finished! Please /restart for the Changes to work!")
+    bot.sendMessage(chat_id, result + "\nTask finished! Do you want to restart now?", reply_markup=restart_keyboard)
 
 
 def restart_soon():
@@ -68,8 +71,21 @@ def restart(chat_id, args=None):
 
     bot.sendMessage(chat_id, "Restarting... ")
 
-    sendAdmins("Just fyi: Someone ordered me to restart!", chat_id)
+    send_admins("Just fyi: Someone ordered me to restart!", except_this=chat_id)
 
     t = Thread(target=restart_soon)
     t.start()
 
+
+def callback_restart(msg):
+    if bot is None:
+        raise ReferenceError("Cannot use Function without Bot Context!")
+
+    query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+    from_id = str(from_id)
+
+    bot.answerCallbackQuery(query_id, text="Restarting... ")
+    send_admins("Just fyi: Someone ordered me to restart!", except_this=from_id)
+
+    t = Thread(target=restart_soon)
+    t.start()
