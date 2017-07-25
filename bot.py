@@ -1,15 +1,13 @@
 import helper
-try:
-    import configparser
-    import telepot
-    from telepot.loop import MessageLoop
-    from time import sleep
-    from sys import exit
-except ImportError:
-    helper.restart_soon()
-
+import debug
+import configparser
+import telepot
+from telepot.loop import MessageLoop
+from time import sleep
+from sys import exit
 
 _VERSION = 0.1
+_DEBUG = True
 
 filePath = None
 admins = None
@@ -38,9 +36,25 @@ def aboutme(chat_id, args=None):
     bot.sendMessage(chat_id, createHeader())
 
 
+def show_debug(chat_id, args=None):
+    if _DEBUG:
+        methods = ''
+        for key in debug_functions.keys():
+            methods = methods+str(key)+'\n'
+        bot.sendMessage(chat_id, "All current Debug Methods:\n\n"+methods)
+    else:
+        bot.sendMessage(chat_id, "Debug is not enabled!")
+
+
 functions = {'/pull': helper.pull,
              '/restart': helper.restart,
-             '/aboutme': aboutme}
+             '/aboutme': aboutme,
+             '/debug': show_debug}
+
+debug_functions = {'/debug_remove_keyboard': debug.remove_keyboard,
+                   '/debug_set_keyboard': debug.set_keyboard}
+if _DEBUG:
+    functions = {**functions, **debug_functions}
 
 
 def handle(msg):
@@ -78,6 +92,8 @@ if __name__ == '__main__':
     helper.bot = bot
     helper.admins = admins
 
+    debug.bot = bot
+
     try:
         print(createHeader())
     except Exception as e:
@@ -89,7 +105,7 @@ if __name__ == '__main__':
     print('Listening ...')
 
     # Say Hello to our Admins!
-    helper.sendAdmins("I'm Back!")
+    helper.sendAdmins("I'm Back!", silent=True)
 
     # Keep the program running.
     while 1:

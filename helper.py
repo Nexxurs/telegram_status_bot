@@ -24,14 +24,13 @@ def getFilePath():
 def getGitBranch():
     out, err = _execute("cd " + filePath + " && git symbolic-ref HEAD")
     l = out.split('/')
-    return '/'.join(l[2:])
+    return '/'.join(l[2:]).strip()
 
 
-
-def sendAdmins(msg, except_this=''):
+def sendAdmins(msg, except_this='', silent=False):
     for admin in admins:
         if admin != except_this and len(admin) > 0:
-            bot.sendMessage(admin, msg)
+            bot.sendMessage(admin, msg, disable_notification=silent)
 
 
 def pull(chat_id, args=None):
@@ -43,14 +42,13 @@ def pull(chat_id, args=None):
         raise ReferenceError("Cannot use Function without Bot Context!")
 
     if len(args) > 1:
-        # TODO Checkout new Branch!
         branch = args[1]
-        out, err = _execute("cd " + filePath + " && git checkout "+branch+" && git pull")
+        out, err = _execute("cd " + filePath + " && git checkout " + branch + " && git pull")
     else:
         out, err = _execute("cd " + filePath + " && git pull")
 
     if len(err) > 0:
-        result = out+"\n\nERROR:\n" + err
+        result = err + "\n\n" + out
     else:
         result = out
     bot.sendMessage(chat_id, result + "\nTask finished! Please /restart for the Changes to work!")
@@ -71,4 +69,3 @@ def restart(chat_id, args=None):
 
     t = Thread(target=restart_soon)
     t.start()
-
