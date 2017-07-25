@@ -6,8 +6,8 @@ from telepot.loop import MessageLoop
 from time import sleep
 from sys import exit
 
-_VERSION = 0.1
-_DEBUG = True
+_VERSION = '0.1.1'
+_DEBUG = False
 
 filePath = None
 admins = None
