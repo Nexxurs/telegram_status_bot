@@ -59,20 +59,21 @@ if _DEBUG:
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-    print(content_type, chat_type, chat_id, msg['text'])
+    print("Content:", content_type, ", Chat Type:", chat_type, ", From:", msg['from']['id'],
+          ", Chat ID:", chat_id, ", Text:", msg['text'])
 
     # admins are strings and it seems to work sending messages to String IDs
     chat_id = str(chat_id)
 
-    if not chat_id in admins:
+    if msg['from']['id'] not in admins:
         print("Message from unknown User!")
         bot.sendMessage(chat_id, "I'm sorry, but my Daddy says im not allowed to speak to Strangers!")
         return
 
-    msgArgs = msg['text'].split(' ')
+    msg_args = msg['text'].split(' ')
 
-    if msgArgs[0] in functions:
-        functions[msgArgs[0]](chat_id, msgArgs)
+    if msg_args[0] in functions:
+        functions[msg_args[0]](chat_id, msg_args)
     else:
         bot.sendMessage(chat_id, "Error 404: Function not found!")
 
