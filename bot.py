@@ -64,8 +64,9 @@ def handle(msg):
 
     # admins are strings and it seems to work sending messages to String IDs
     chat_id = str(chat_id)
+    user_id = str(msg['from']['id'])
 
-    if msg['from']['id'] not in admins:
+    if user_id not in admins:
         print("Message from unknown User!")
         bot.sendMessage(chat_id, "I'm sorry, but my Daddy says im not allowed to speak to Strangers!")
         return
