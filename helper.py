@@ -22,11 +22,10 @@ def getFilePath():
 
 
 def getGitBranch():
-    try:
-        out, err = _execute("cd " + filePath + " && git branch")
-        return out
-    except Exception as e:
-        return None
+    out, err = _execute("cd " + filePath + " && git symbolic-ref HEAD")
+    l = out.split('/')
+    return '/'.join(l[2:])
+
 
 
 def sendAdmins(msg, except_this=''):
@@ -46,7 +45,7 @@ def pull(chat_id, args=None):
     if len(args) > 1:
         # TODO Checkout new Branch!
         branch = args[1]
-        out, err = _execute("cd " + filePath + " && git checkout "+branch)
+        out, err = _execute("cd " + filePath + " && git checkout "+branch+" && git pull")
     else:
         out, err = _execute("cd " + filePath + " && git pull")
 
