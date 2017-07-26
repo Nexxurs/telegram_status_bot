@@ -67,7 +67,7 @@ class ModuleManager:
         modules = self.get_enabled()
         for mod in modules:
             try:
-                new_functions = mod.get_callback_functions()()
+                new_functions = mod.get_callback_functions()
                 res = {**new_functions, **res}
             except AttributeError:
                 _logger.info("No chat functions for %r", mod)
