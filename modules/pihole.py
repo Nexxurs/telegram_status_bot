@@ -16,7 +16,7 @@ class Module(CoreModule):
         return self._enabled
 
     def get_chat_functions(self):
-        return {'/pihole', self.get_status}
+        return {'/pihole': self.get_status}
 
     def get_status(self, chat_id, args=None):
         req = request.urlopen("http://localhost/admin/api.php")

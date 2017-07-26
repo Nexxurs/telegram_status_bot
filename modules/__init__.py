@@ -18,10 +18,8 @@ class ModuleManager:
                 imp = importlib.import_module(__package__ + '.' + modname)
                 tmp_module = imp.Module(bot=bot, config=config)
                 self.module_list.append(tmp_module)
-            except Exception as e:
-                _logger.warn("Found bad module in modules folder: %r", modname)
-                _logger.exception("Why?")
-                pass
+            except Exception:
+                _logger.exception("Found a bad module in modules folder %r", modname)
 
     def get_enabled(self):
         res = []
