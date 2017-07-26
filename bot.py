@@ -6,6 +6,7 @@ from telepot.loop import MessageLoop
 from time import sleep
 import sys
 import logging
+import modules
 
 _VERSION = '0.1.1'
 _DEBUG = True
@@ -22,8 +23,8 @@ else:
 logging.basicConfig(filename="log/telegram.log", level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler = logging.StreamHandler(sys.stdout)
-#handler.setLevel(level)
-#handler.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
+# handler.setLevel(level)
+handler.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
 logging.getLogger().addHandler(handler)
 
 logger = logging.getLogger(__name__)
@@ -63,19 +64,24 @@ def show_debug(chat_id, args=None):
         logger.info("Debug is disabled - No List will be created!")
         bot.sendMessage(chat_id, "Debug is not enabled!")
 
+def get_functions(chat_id, args=None):
+    res = 'Here are all available functions:\n\n'
+    for f in functions.keys():
+        res = res+f+'\n'
+    bot.sendMessage(chat_id, res)
 
-functions = {'/pull': helper.pull,
-             '/restart': helper.restart,
+functions = {'/restart': helper.restart,
              '/aboutme': aboutme,
              '/debug': show_debug}
 
 debug_functions = {'/debug_remove_keyboard': debug.remove_keyboard,
-                   '/debug_set_keyboard': debug.set_keyboard}
+                   '/debug_set_keyboard': debug.set_keyboard,
+                   '/functions': get_functions}
 
-callback_functions = {'restart': helper.callback_restart,
-                      'None': helper.callback_None}
+callback_functions = {'restart': helper.callback_restart}
+
 if _DEBUG:
-    functions = {**functions, **debug_functions}
+    functions = {**debug_functions, **functions}
 
 
 def handle_chat_message(msg):
@@ -135,6 +141,11 @@ if __name__ == '__main__':
     helper.bot = bot
     helper.admins = admins
     debug.bot = bot
+
+    manager = modules.ModuleManager(config=config, bot=bot)
+
+    functions = {**manager.get_enabled_chat_functions(), **functions}
+
 
     try:
         logger.info(createHeader())
