@@ -39,6 +39,14 @@ class Module(CoreModule):
         self._bot.sendMessage(chat_id, result + "\nTask finished! Do you want to restart now?",
                               reply_markup=helper.restart_keyboard)
 
+    def fetch(self, chat_id, args=None):
+        out, err = helper.execute("cd " + self._filepath + " && git fetch")
+        if len(err) > 0:
+            result = err + "\n\n" + out
+        else:
+            result = out
+        self._bot.sendMessage(chat_id, result + "\nTask finished!")
+
     def get_current_branch(self):
         _logger.info("Getting Current Git Branch")
         out, err = helper.execute("cd " + self._filepath + " && git symbolic-ref HEAD")

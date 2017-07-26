@@ -9,7 +9,7 @@ class Module(CoreModule):
         try:
             req = request.urlopen("http://localhost/admin/api.php")
             self._enabled = True
-        except error.HTTPError | error.URLError:
+        except Exception:
             self._enabled = False
 
     def is_enabled(self):

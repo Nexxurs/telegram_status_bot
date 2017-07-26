@@ -25,3 +25,6 @@ class Module(CoreModule):
 
     def get_chat_functions(self):
         return {}
+
+    def on_message(self, chat_id, args=None):
+        pass
