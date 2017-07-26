@@ -28,8 +28,8 @@ class ModuleManager:
             try:
                 if m.is_enabled():
                     res.append(m)
-            except AttributeError:
-                _logger.info("Found bad module: %r", m)
+            except Exception:
+                _logger.exception("Found bad module: %r", m)
                 bad_modules.append(m)
 
         for m in bad_modules:
