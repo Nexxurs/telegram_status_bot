@@ -18,6 +18,7 @@ class Module(CoreModule):
     def get_chat_functions(self):
         return {'/pihole': self.get_status}
 
+    # todo change to HTML Table!
     def get_status(self, chat_id, args=None):
         req = request.urlopen("http://localhost/admin/api.php")
         txt = req.read().decode()
