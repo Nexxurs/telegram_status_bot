@@ -22,7 +22,7 @@ class Module(CoreModule):
         req = request.urlopen("http://localhost/admin/api.php")
         txt = req.read().decode()
         dic = json.loads(txt)
-        msg = 'Pi-Hole Stats of the Day:\n'
+        msg = 'Pi-Hole Stats of the Day:\n\n'
         for key in dic.keys():
-            msg = msg + str(key) + ': '+str(dic[key])+'\n'
+            msg = msg + str(key).ljust(25) + ': '+str(dic[key])+'\n'
         self._bot.sendMessage(chat_id, msg)
