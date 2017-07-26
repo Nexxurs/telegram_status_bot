@@ -37,6 +37,7 @@ class ModuleManager:
         return res
 
     def get_enabled_chat_functions(self):
+        bad_modules = []
         res = {}
         modules = self.get_enabled()
         for mod in modules:
@@ -44,12 +45,17 @@ class ModuleManager:
                 new_functions = mod.get_chat_functions()
                 res = {**new_functions, **res}
             except AttributeError:
-                _logger.info("No chat functions for %r", mod)
-                pass
+                _logger.info("No chat functions for %r", mod.__module__)
+            except Exception:
+                _logger.exception("Something else happeened to %r", mod.__module__)
+                bad_modules.append(mod)
+        for m in bad_modules:
+            self.module_list.remove(m)
         return res
 
     def get_enabled_debug_chat_functions(self):
         res = {}
+        bad_modules = []
         modules = self.get_enabled()
         for mod in modules:
             try:
@@ -57,11 +63,16 @@ class ModuleManager:
                 res = {**new_functions, **res}
             except AttributeError:
                 _logger.info("No chat functions for %r", mod)
-                pass
+            except Exception:
+                _logger.exception("Something else happened to %r", mod.__module__)
+                bad_modules.append(mod)
+        for m in bad_modules:
+            self.module_list.remove(m)
         return res
 
     def get_enabled_callback_functions(self):
         res = {}
+        bad_modules = []
         modules = self.get_enabled()
         for mod in modules:
             try:
@@ -69,7 +80,11 @@ class ModuleManager:
                 res = {**new_functions, **res}
             except AttributeError:
                 _logger.info("No chat functions for %r", mod)
-                pass
+            except Exception:
+                _logger.exception("Something else happened to %r", mod.__module__)
+                bad_modules.append(mod)
+        for m in bad_modules:
+            self.module_list.remove(m)
         return res
 
     def get_module_by_name(self, name):

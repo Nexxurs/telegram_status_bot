@@ -24,5 +24,5 @@ class Module(CoreModule):
         dic = json.loads(txt)
         msg = 'Pi-Hole Stats of the Day:\n'
         for key in dic.keys():
-            msg = msg + key + ': '+dic[key]+'\n'
+            msg = msg + str(key) + ': '+str(dic[key])+'\n'
         self._bot.sendMessage(chat_id, msg)
