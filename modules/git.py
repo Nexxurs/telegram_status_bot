@@ -37,14 +37,12 @@ class Module(CoreModule):
         else:
             result = out
         self._bot.sendMessage(chat_id, result + "\nTask finished! Do you want to restart now?",
-                         reply_markup=helper.restart_keyboard)
+                              reply_markup=helper.restart_keyboard)
 
     def get_current_branch(self):
         _logger.info("Getting Current Git Branch")
         out, err = helper.execute("cd " + self._filepath + " && git symbolic-ref HEAD")
+        if len(err) > 0:
+            return "No Git!"
         l = out.split('/')
         return '/'.join(l[2:]).strip()
-
-
-
-

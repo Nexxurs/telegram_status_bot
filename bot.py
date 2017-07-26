@@ -116,13 +116,10 @@ def handle_callback_query(msg):
         bot.answerCallbackQuery(query_id, text="Error - Function not found!", show_alert=True)
 
 
-functions = {'/restart': helper.restart,
-             '/aboutme': aboutme,
+functions = {'/aboutme': aboutme,
              '/debug': show_debug}
-
 debug_functions = {'/functions': get_functions}
-
-callback_functions = {'restart': helper.callback_restart}
+callback_functions = {}
 
 
 if __name__ == '__main__':
@@ -135,17 +132,14 @@ if __name__ == '__main__':
 
     bot = telepot.Bot(token)
 
-    manager = modules.ModuleManager(config=config, bot=bot)
-
     logger.debug("INIT Helper")
-
+    manager = modules.ModuleManager(config=config, bot=bot)
     helper.init(bot=bot, config=config, module_manager=manager)
-
     admins = helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}
-
     debug_functions = {**manager.get_enabled_debug_chat_functions(), **debug_functions}
+    callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
 
     try:
         logger.info(createHeader())

@@ -13,3 +13,15 @@ class CoreModule:
 
     def get_debug_chat_functions(self):
         return {}
+
+    def get_callback_functions(self):
+        return {}
+
+
+# For Copy-Paste!
+class Module(CoreModule):
+    def is_enabled(self):
+        return False
+
+    def get_chat_functions(self):
+        return {}

@@ -13,13 +13,14 @@ class ModuleManager:
         self.module_list = []
 
         for importer, modname, ispkg in pkgutil.iter_modules([__package__]):
-            logging.info("Found submodule %s (is a package: %s)", modname, ispkg)
+            _logger.debug("Found submodule %s (is a package: %s)", modname, ispkg)
             try:
                 imp = importlib.import_module(__package__ + '.' + modname)
                 tmp_module = imp.Module(bot=bot, config=config)
                 self.module_list.append(tmp_module)
-            except AttributeError as e:
-                _logger.info("Found bad module in modules folder: %r", modname)
+            except Exception as e:
+                _logger.warn("Found bad module in modules folder: %r", modname)
+                _logger.exception("Why?")
                 pass
 
     def get_enabled(self):
@@ -55,6 +56,18 @@ class ModuleManager:
         for mod in modules:
             try:
                 new_functions = mod.get_debug_chat_functions()
+                res = {**new_functions, **res}
+            except AttributeError:
+                _logger.info("No chat functions for %r", mod)
+                pass
+        return res
+
+    def get_enabled_callback_functions(self):
+        res = {}
+        modules = self.get_enabled()
+        for mod in modules:
+            try:
+                new_functions = mod.get_callback_functions()()
                 res = {**new_functions, **res}
             except AttributeError:
                 _logger.info("No chat functions for %r", mod)
