@@ -13,13 +13,13 @@ class ModuleManager:
         self.module_list = []
 
         for importer, modname, ispkg in pkgutil.iter_modules([__package__]):
-            logging.debug("Found submodule %s (is a package: %s)", (modname, ispkg))
+            logging.info("Found submodule %s (is a package: %s)", modname, ispkg)
             try:
-                tmp_module = importlib.import_module(__package__ + '.' + modname)
-                tmp_module.init(bot=self.bot, config=self.config)
+                imp = importlib.import_module(__package__ + '.' + modname)
+                tmp_module = imp.Module(bot=bot, config=config)
                 self.module_list.append(tmp_module)
-            except AttributeError:
-                # todo LOGGING
+            except AttributeError as e:
+                _logger.info("Found bad module in modules folder: %r", modname)
                 pass
 
     def get_enabled(self):
@@ -30,7 +30,7 @@ class ModuleManager:
                 if m.is_enabled():
                     res.append(m)
             except AttributeError:
-                # todo logging
+                _logger.info("Found bad module: %r", m)
                 bad_modules.append(m)
 
         for m in bad_modules:
@@ -45,7 +45,7 @@ class ModuleManager:
                 new_functions = mod.get_chat_functions()
                 res = {**new_functions, **res}
             except AttributeError:
-                # logging
+                _logger.info("No chat functions for %r", mod)
                 pass
         return res
 
@@ -57,13 +57,13 @@ class ModuleManager:
                 new_functions = mod.get_debug_chat_functions()
                 res = {**new_functions, **res}
             except AttributeError:
-                # logging
+                _logger.info("No chat functions for %r", mod)
                 pass
         return res
 
     def get_module_by_name(self, name):
         full_name = __package__+'.'+name
         for mod in self.module_list:
-            if mod.__name__ == full_name:
+            if mod.__module__ == full_name:
                 return mod
         return None

@@ -1,36 +1,24 @@
 from telepot.namedtuple import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
 import logging
+from modules.core_module import CoreModule
 
-_bot = None
-_config = None
 _logger = logging.getLogger(__name__)
 
-def init(bot, config):
-    global _bot
-    global _config
-    _bot = bot
-    _config = config
 
+class Module(CoreModule):
+    def is_enabled(self):
+        return True
 
-def is_enabled():
-    return True
+    def get_debug_chat_functions(self):
+        return {'/debug_remove_keyboard': self.remove_keyboard,
+                '/debug_set_keyboard': self.set_keyboard}
 
+    def remove_keyboard(self, chat_id, args=None):
+        _logger.info("Removing custom Keyboard at Chat %r", chat_id)
+        self._bot.sendMessage(chat_id, "Removed Custom Keyboard!", reply_markup=ReplyKeyboardRemove())
 
-def get_chat_functions():
-    return {}
-
-
-def get_debug_chat_functions():
-    return {'/debug_remove_keyboard': remove_keyboard,
-                       '/debug_set_keyboard': set_keyboard}
-
-
-def remove_keyboard(chat_id, args=None):
-    logger.info("Removing custom Keyboard at Chat %r", chat_id)
-    bot.sendMessage(chat_id, "Removed Custom Keyboard!", reply_markup=ReplyKeyboardRemove())
-
-
-def set_keyboard(chat_id, args=None):
-    logger.info("Adding custom testing Keyboard at Chat %r",chat_id)
-    bot.sendMessage(chat_id, "Added Keyboard with Function to remove",
-                    reply_markup=ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="/debug_remove_keyboard")]]))
+    def set_keyboard(self, chat_id, args=None):
+        _logger.info("Adding custom testing Keyboard at Chat %r", chat_id)
+        self._bot.sendMessage(chat_id, "Added Keyboard with Function to remove",
+                              reply_markup=ReplyKeyboardMarkup(
+                                  keyboard=[[KeyboardButton(text="/debug_remove_keyboard")]]))

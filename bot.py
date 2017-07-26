@@ -2,13 +2,10 @@ import configparser
 import logging
 import sys
 from time import sleep
-
 import telepot
 from telepot.loop import MessageLoop
-
 import helper
 import modules
-from modules import debug
 
 _VERSION = '0.1.1'
 _DEBUG = True
@@ -42,7 +39,7 @@ def createHeader():
     string = string + "   Name: " + me['first_name'] + "\n"
     string = string + "   Username: " + me['username'] + "\n"
     string = string + "   ID: " + str(me['id']) + "\n"
-    string = string + "   Branch: " + str(helper.getGitBranch()) + "\n"
+    string = string + "   Branch: " + str(helper.get_git_branch()) + "\n"
     string = string + "   Version: " + str(_VERSION) + "\n"
     string = string + "####################################################\n"
     return string
@@ -71,6 +68,10 @@ def get_functions(chat_id, args=None):
     res = 'Here are all available functions:\n\n'
     for f in functions.keys():
         res = res+f+'\n'
+    if _DEBUG:
+        res = res+"-----------\n"
+        for f in debug_functions.keys():
+            res = res+f+'\n'
     bot.sendMessage(chat_id, res)
 
 
@@ -125,29 +126,26 @@ callback_functions = {'restart': helper.callback_restart}
 
 
 if __name__ == '__main__':
-    logger.info("INIT Config at Path " + helper.getFilePath() + "/config.ini")
+    logger.info("INIT Config at Path " + helper.get_file_path() + "/config.ini")
     config = configparser.ConfigParser()
-    config.read(helper.getFilePath() + "/config.ini")
+    config.read(helper.get_file_path() + "/config.ini")
 
     token = config['Telegram']['Token']
     token = str(token)
-
-    admins = config['Telegram']['Admins']
-    admins = admins.split(',')
-    logger.debug("Set Admins: %s", ', '.join(admins))
 
     bot = telepot.Bot(token)
 
     manager = modules.ModuleManager(config=config, bot=bot)
 
     logger.debug("INIT Helper")
-    helper.bot = bot
-    helper.admins = admins
-    debug.bot = bot
+
+    helper.init(bot=bot, config=config, module_manager=manager)
+
+    admins = helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}
 
-    debug_functions = {**manager.get_enabled_debug_chat_functions(), **functions}
+    debug_functions = {**manager.get_enabled_debug_chat_functions(), **debug_functions}
 
     try:
         logger.info(createHeader())
