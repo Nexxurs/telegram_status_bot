@@ -1,9 +1,28 @@
 from telepot.namedtuple import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
 import logging
 
-bot = None
+_bot = None
+_config = None
+_logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
+def init(bot, config):
+    global _bot
+    global _config
+    _bot = bot
+    _config = config
+
+
+def is_enabled():
+    return True
+
+
+def get_chat_functions():
+    return {}
+
+
+def get_debug_chat_functions():
+    return {'/debug_remove_keyboard': remove_keyboard,
+                       '/debug_set_keyboard': set_keyboard}
 
 
 def remove_keyboard(chat_id, args=None):

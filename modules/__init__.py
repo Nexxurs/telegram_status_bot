@@ -5,7 +5,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class ModuleManager():
+class ModuleManager:
     def __init__(self, config, bot):
         self.bot = bot
         self.config = config
@@ -39,9 +39,7 @@ class ModuleManager():
 
     def get_enabled_chat_functions(self):
         res = {}
-
         modules = self.get_enabled()
-
         for mod in modules:
             try:
                 new_functions = mod.get_chat_functions()
@@ -49,5 +47,23 @@ class ModuleManager():
             except AttributeError:
                 # logging
                 pass
-
         return res
+
+    def get_enabled_debug_chat_functions(self):
+        res = {}
+        modules = self.get_enabled()
+        for mod in modules:
+            try:
+                new_functions = mod.get_debug_chat_functions()
+                res = {**new_functions, **res}
+            except AttributeError:
+                # logging
+                pass
+        return res
+
+    def get_module_by_name(self, name):
+        full_name = __package__+'.'+name
+        for mod in self.module_list:
+            if mod.__name__ == full_name:
+                return mod
+        return None

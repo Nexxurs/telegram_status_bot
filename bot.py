@@ -1,12 +1,14 @@
-import helper
-import debug
 import configparser
+import logging
+import sys
+from time import sleep
+
 import telepot
 from telepot.loop import MessageLoop
-from time import sleep
-import sys
-import logging
+
+import helper
 import modules
+from modules import debug
 
 _VERSION = '0.1.1'
 _DEBUG = True
@@ -14,6 +16,7 @@ _DEBUG = True
 filePath = None
 admins = None
 bot = None
+
 
 # Logger INIT
 if _DEBUG:
@@ -26,7 +29,6 @@ handler = logging.StreamHandler(sys.stdout)
 # handler.setLevel(level)
 handler.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
 logging.getLogger().addHandler(handler)
-
 logger = logging.getLogger(__name__)
 
 
@@ -64,24 +66,12 @@ def show_debug(chat_id, args=None):
         logger.info("Debug is disabled - No List will be created!")
         bot.sendMessage(chat_id, "Debug is not enabled!")
 
+
 def get_functions(chat_id, args=None):
     res = 'Here are all available functions:\n\n'
     for f in functions.keys():
         res = res+f+'\n'
     bot.sendMessage(chat_id, res)
-
-functions = {'/restart': helper.restart,
-             '/aboutme': aboutme,
-             '/debug': show_debug}
-
-debug_functions = {'/debug_remove_keyboard': debug.remove_keyboard,
-                   '/debug_set_keyboard': debug.set_keyboard,
-                   '/functions': get_functions}
-
-callback_functions = {'restart': helper.callback_restart}
-
-if _DEBUG:
-    functions = {**debug_functions, **functions}
 
 
 def handle_chat_message(msg):
@@ -102,6 +92,8 @@ def handle_chat_message(msg):
 
     if msg_args[0] in functions:
         functions[msg_args[0]](chat_id, msg_args)
+    elif _DEBUG and msg_args[0] in debug_functions:
+        debug_functions[msg_args[0]](chat_id, msg_args)
     else:
         bot.sendMessage(chat_id, "Error 404: Function not found!")
 
@@ -123,6 +115,15 @@ def handle_callback_query(msg):
         bot.answerCallbackQuery(query_id, text="Error - Function not found!", show_alert=True)
 
 
+functions = {'/restart': helper.restart,
+             '/aboutme': aboutme,
+             '/debug': show_debug}
+
+debug_functions = {'/functions': get_functions}
+
+callback_functions = {'restart': helper.callback_restart}
+
+
 if __name__ == '__main__':
     logger.info("INIT Config at Path " + helper.getFilePath() + "/config.ini")
     config = configparser.ConfigParser()
@@ -137,15 +138,16 @@ if __name__ == '__main__':
 
     bot = telepot.Bot(token)
 
+    manager = modules.ModuleManager(config=config, bot=bot)
+
     logger.debug("INIT Helper")
     helper.bot = bot
     helper.admins = admins
     debug.bot = bot
 
-    manager = modules.ModuleManager(config=config, bot=bot)
-
     functions = {**manager.get_enabled_chat_functions(), **functions}
 
+    debug_functions = {**manager.get_enabled_debug_chat_functions(), **functions}
 
     try:
         logger.info(createHeader())
