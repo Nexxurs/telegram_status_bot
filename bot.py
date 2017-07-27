@@ -20,12 +20,22 @@ if _DEBUG:
     level = logging.DEBUG
 else:
     level = logging.INFO
-logging.basicConfig(filename="log/telegram.log", level=logging.INFO,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler = logging.StreamHandler(sys.stdout)
-# handler.setLevel(level)
-handler.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
-logging.getLogger().addHandler(handler)
+
+root = logging.getLogger('')
+root.setLevel(logging.DEBUG)
+for h in root.handlers:
+    root.removeHandler(h)
+
+file_handler = logging.FileHandler("log/telegram.log")
+file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
+file_handler.setLevel(logging.INFO)
+root.addHandler(file_handler)
+
+stream_handler = logging.StreamHandler(sys.stdout)
+stream_handler.setFormatter(logging.Formatter('%(levelname)s - %(name)s - %(message)s'))
+stream_handler.setLevel(logging.DEBUG)
+root.addHandler(stream_handler)
+
 logger = logging.getLogger(__name__)
 
 
