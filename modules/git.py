@@ -1,6 +1,7 @@
 import helper
 import logging
 from modules.core_module import CoreModule
+from os import path
 
 _logger = logging.getLogger(__name__)
 
@@ -11,7 +12,7 @@ class Module(CoreModule):
         self._filepath = helper.get_file_path()
 
     def is_enabled(self):
-        return True
+        return path.isfile(self._filepath+'/.git')
 
     def get_chat_functions(self):
         return {'/git_pull': self.pull}
