@@ -12,7 +12,8 @@ class Module(CoreModule):
         self._filepath = helper.get_file_path()
 
     def is_enabled(self):
-        return path.isfile(self._filepath+'/.git')
+        path.is
+        return path.isdir(self._filepath+'/.git')
 
     def get_chat_functions(self):
         return {'/git_pull': self.pull}
