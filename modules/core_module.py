@@ -1,9 +1,8 @@
 
 
 class CoreModule:
-    def __init__(self, bot, config):
+    def __init__(self, bot):
         self._bot = bot
-        self._config = config
 
     def is_enabled(self):
         return False

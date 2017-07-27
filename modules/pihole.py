@@ -1,13 +1,14 @@
 from modules.core_module import CoreModule
-from urllib import request, error
+from urllib import request
 import json
+
 
 class Module(CoreModule):
 
-    def __init__(self, bot, config):
-        super().__init__(bot, config)
+    def __init__(self, bot):
+        super().__init__(bot)
         try:
-            req = request.urlopen("http://localhost/admin/api.php")
+            request.urlopen("http://localhost/admin/api.php")
             self._enabled = True
         except Exception:
             self._enabled = False

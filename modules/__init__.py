@@ -6,9 +6,8 @@ _logger = logging.getLogger(__name__)
 
 
 class ModuleManager:
-    def __init__(self, config, bot):
+    def __init__(self, bot):
         self.bot = bot
-        self.config = config
 
         self.module_list = []
 
@@ -16,7 +15,7 @@ class ModuleManager:
             _logger.debug("Found submodule %s (is a package: %s)", modname, ispkg)
             try:
                 imp = importlib.import_module(__package__ + '.' + modname)
-                tmp_module = imp.Module(bot=bot, config=config)
+                tmp_module = imp.Module(bot=bot)
                 self.module_list.append(tmp_module)
             except Exception:
                 _logger.exception("Found a bad module in modules folder %r", modname)
@@ -47,7 +46,7 @@ class ModuleManager:
             except AttributeError:
                 _logger.info("No chat functions for %r", mod.__module__)
             except Exception:
-                _logger.exception("Something else happeened to %r", mod.__module__)
+                _logger.exception("Something else happened to %r", mod.__module__)
                 bad_modules.append(mod)
         for m in bad_modules:
             self.module_list.remove(m)

@@ -2,6 +2,7 @@ import subprocess
 import os
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 import logging
+import config
 
 _filePath = os.path.dirname(os.path.realpath(__file__))
 _bot = None
@@ -14,7 +15,7 @@ restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
 
 
-def init(bot, config, module_manager):
+def init(bot, module_manager):
     global _bot
     global _module_manager
     global _admins
@@ -22,7 +23,7 @@ def init(bot, config, module_manager):
     _bot = bot
     _module_manager = module_manager
 
-    _admins = config['Telegram']['Admins']
+    _admins = config.get_telegram_config()['Admins']
     _admins = _admins.split(',')
 
 

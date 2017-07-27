@@ -1,4 +1,4 @@
-import configparser
+import config
 import logging
 import sys
 from time import sleep
@@ -123,18 +123,11 @@ callback_functions = {}
 
 
 if __name__ == '__main__':
-    logger.info("INIT Config at Path " + helper.get_file_path() + "/config.ini")
-    config = configparser.ConfigParser()
-    config.read(helper.get_file_path() + "/config.ini")
-
-    token = config['Telegram']['Token']
-    token = str(token)
-
-    bot = telepot.Bot(token)
+    bot = telepot.Bot(config.get_telegram_config()['Token'])
 
     logger.debug("INIT Helper")
-    manager = modules.ModuleManager(config=config, bot=bot)
-    helper.init(bot=bot, config=config, module_manager=manager)
+    manager = modules.ModuleManager(bot=bot)
+    helper.init(bot=bot, module_manager=manager)
     admins = helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}

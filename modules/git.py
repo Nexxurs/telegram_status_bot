@@ -6,8 +6,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Module(CoreModule):
-    def __init__(self, bot, config):
-        super().__init__(bot, config)
+    def __init__(self, bot):
+        super().__init__(bot)
         self._filepath = helper.get_file_path()
 
     def is_enabled(self):
