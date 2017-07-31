@@ -8,6 +8,7 @@ _filePath = os.path.dirname(os.path.realpath(__file__))
 _bot = None
 _admins = []
 _module_manager = None
+_git_branch = None
 
 _logger = logging.getLogger(__name__)
 
@@ -45,11 +46,15 @@ def execute(cmd):
 
 
 def get_git_branch():
-    mod = _module_manager.get_module_by_name('git')
-    if mod is None:
-        return "No Git!"
-    else:
-        return mod.get_current_branch()
+    global _git_branch
+    if _git_branch is None:
+        mod = _module_manager.get_module_by_name('git')
+        if mod is None:
+            _git_branch = "No Git!"
+        else:
+            _git_branch = mod.get_current_branch()
+
+    return _git_branch
 
 
 def send_admins(msg, except_this='', silent=False):
