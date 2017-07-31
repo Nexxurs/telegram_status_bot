@@ -43,6 +43,9 @@ root.addHandler(stream_handler)
 logger = logging.getLogger(__name__)
 
 
+
+
+
 def aboutme(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
@@ -133,7 +136,7 @@ if __name__ == '__main__':
     callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
 
     try:
-        logger.info(helper.createHeader())
+        logger.info(helper.createHeader(_VERSION))
     except Exception as e:
         logger.exception("Cannot start Bot, Connection Error!")
         exit()

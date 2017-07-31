@@ -74,6 +74,22 @@ def get_git_branch():
     return _git_branch
 
 
+def createHeader(version = 'No Version'):
+    if _bot is None:
+        raise ReferenceError("Cannot create Header without Bot Context!")
+
+    me = _bot.getMe()
+    string = "\n"
+    string = string + "################################################################\n"
+    string = string + "   Name:         " + me['first_name'] + "\n"
+    string = string + "   Username:   " + me['username'] + "\n"
+    string = string + "   ID:              " + str(me['id']) + "\n"
+    string = string + "   Branch:        " + str(get_git_branch()) + "\n"
+    string = string + "   Version:       " + str(version) + "\n"
+    string = string + "################################################################\n"
+    return string
+
+
 def send_admins(msg, except_this='', silent=False):
     _logger.info("Send to all Admins (silent? %r): %s", silent, msg)
     for admin in _admins:

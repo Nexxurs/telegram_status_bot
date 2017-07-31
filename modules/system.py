@@ -6,6 +6,8 @@ import sys
 import helper
 from threading import Thread
 import telepot
+import socket
+import platform
 
 _logger = logging.getLogger(__name__)
 
@@ -15,10 +17,42 @@ class Module(CoreModule):
         return True
 
     def get_chat_functions(self):
-        return {'/restart': self.restart}
+        osname = platform.system()
+
+        result = {'/restart': self.restart}
+
+        if osname == 'Linux':
+            linux_functions = {'/status': self.status}
+            result = {**linux_functions, **result}
+
+        return result
 
     def get_callback_functions(self):
         return {'restart': self.callback_restart}
+
+    def status(self, chat_id, args=None):
+        hostname = socket.gethostname()
+        out, err = helper.execute('uptime')
+
+        out = out.strip()
+        out.replace(',', '')
+        array = out.split(' ')
+
+        uptime = array[2]
+        loads = array[9:]
+
+        result = ''
+        out, err = helper.execute('cd '+helper.get_file_path()+' & scripts/model.sh')
+        if len(out > 0):
+            result = result+out
+        result = result + 'Hostname:' + hostname + '\n'
+        result = result + 'Uptime:  ' + uptime + '\n'
+        result = result + 'Loads:   '
+        for l in loads:
+            result = result + l + ' '
+        result = result + '\n'
+
+        self._bot.sendMessage(chat_id, result)
 
     def restart(self, chat_id, args=None):
         self._bot.sendMessage(chat_id, "Restarting... ")
