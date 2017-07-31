@@ -43,27 +43,14 @@ root.addHandler(stream_handler)
 logger = logging.getLogger(__name__)
 
 
-def createHeader():
-    if bot is None:
-        raise ReferenceError("Cannot create Header without Bot Context!")
 
-    me = bot.getMe()
-    string = "\n"
-    string = string + "##############################################################\n"
-    string = string + "   Name:     " + me['first_name'] + "\n"
-    string = string + "   Username: " + me['username'] + "\n"
-    string = string + "   ID:       " + str(me['id']) + "\n"
-    string = string + "   Branch:   " + str(helper.get_git_branch()) + "\n"
-    string = string + "   Version:  " + str(_VERSION) + "\n"
-    string = string + "##############################################################\n"
-    return string
 
 
 def aboutme(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
         raise ReferenceError("Cannot create AboutMe without Bot Context!")
-    bot.sendMessage(chat_id, createHeader())
+    bot.sendMessage(chat_id, helper.createHeader(_VERSION))
 
 
 def show_debug(chat_id, args=None):
@@ -149,7 +136,7 @@ if __name__ == '__main__':
     callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
 
     try:
-        logger.info(createHeader())
+        logger.info(helper.createHeader(_VERSION))
     except Exception as e:
         logger.exception("Cannot start Bot, Connection Error!")
         exit()
