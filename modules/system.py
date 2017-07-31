@@ -35,16 +35,18 @@ class Module(CoreModule):
         out, err = helper.execute('uptime')
 
         out = out.strip()
-        out.replace(',', '')
+        out = out.replace(',', '')
         array = out.split(' ')
 
         uptime = array[2]
         loads = array[9:]
 
         result = ''
-        out, err = helper.execute('cd '+helper.get_file_path()+' & scripts/model.sh')
-        if len(out) > 0:
-            result = result+out
+        model, model_err = helper.execute('cd '+helper.get_file_path()+' & scripts/model.sh')
+        _logger.debug("Model: %s",model)
+        _logger.debug("Model Error: %s",model_err)
+        if len(model) > 0:
+            result = result+model
         result = result + 'Hostname:' + hostname + '\n'
         result = result + 'Uptime:  ' + uptime + '\n'
         result = result + 'Loads:   '
