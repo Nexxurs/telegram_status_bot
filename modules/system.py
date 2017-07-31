@@ -43,7 +43,7 @@ class Module(CoreModule):
 
         result = ''
         out, err = helper.execute('cd '+helper.get_file_path()+' & scripts/model.sh')
-        if len(out > 0):
+        if len(out) > 0:
             result = result+out
         result = result + 'Hostname:' + hostname + '\n'
         result = result + 'Uptime:  ' + uptime + '\n'
