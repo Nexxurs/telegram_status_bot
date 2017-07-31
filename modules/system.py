@@ -43,13 +43,14 @@ class Module(CoreModule):
 
         result = ''
         model, model_err = helper.execute('cd '+helper.get_file_path()+' & scripts/model.sh')
-        _logger.debug("Model: %s",model)
-        _logger.debug("Model Error: %s",model_err)
+
         if len(model) > 0:
             result = result+model
-        result = result + 'Hostname:' + hostname + '\n'
-        result = result + 'Uptime:  ' + uptime + '\n'
-        result = result + 'Loads:   '
+        else:
+            _logger.debug("Model Error: %s", model_err)
+        result = result + 'Hostname: ' + hostname + '\n'
+        result = result + 'Uptime:   ' + uptime + '\n'
+        result = result + 'Loads:    '
         for l in loads:
             result = result + l + ' '
         result = result + '\n'
