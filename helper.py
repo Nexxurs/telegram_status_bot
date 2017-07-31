@@ -35,6 +35,23 @@ def get_admins():
     return _admins
 
 
+def createHeader(version = 'No Version!'):
+    if _bot is None:
+        raise ReferenceError("Cannot create Header without Bot Context!")
+
+    me = _bot.getMe()
+    string = "\n"
+    string = string + "####################################################\n"
+    string = string + "   Name: " + me['first_name'] + "\n"
+    string = string + "   Username: " + me['username'] + "\n"
+    string = string + "   ID: " + str(me['id']) + "\n"
+    string = string + "   Branch: " + str(get_git_branch()) + "\n"
+    string = string + "   Version: " + str(version) + "\n"
+    string = string + "####################################################\n"
+    return string
+
+
+
 def execute(cmd):
     _logger.debug("Executing System Call %s",cmd)
     process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
