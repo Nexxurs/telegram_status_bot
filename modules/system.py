@@ -38,8 +38,11 @@ class Module(CoreModule):
         out = out.replace(',', '')
         array = out.split(' ')
 
-        uptime = array[2]
-        loads = array[9:]
+        uptime_endindex = array.index('users')-2
+        loads_startindex = uptime_endindex+6
+
+        uptime = array[2:uptime_endindex]
+        loads = array[loads_startindex:]
 
         result = ''
         model, model_err = helper.execute('cd '+helper.get_file_path()+' & scripts/model.sh')
@@ -49,7 +52,11 @@ class Module(CoreModule):
         else:
             _logger.debug("Model Error: %s", model_err)
         result = result + 'Hostname: ' + hostname + '\n'
-        result = result + 'Uptime:   ' + uptime + '\n'
+        result = result + 'Uptime:   '
+        for u in uptime:
+            if len(u)>0:
+                result = result + u + ' '
+        result = result + '\n'
         result = result + 'Loads:    '
         for l in loads:
             result = result + l + ' '
