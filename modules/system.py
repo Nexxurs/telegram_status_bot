@@ -34,6 +34,9 @@ class Module(CoreModule):
         hostname = socket.gethostname()
         out, err = helper.execute('uptime')
 
+        if len(err) > 0:
+            self._bot.sendMessage(chat_id, "Error: "+err)
+            return 
         out = out.strip()
         out = out.replace(',', '')
         array = out.split(' ')
