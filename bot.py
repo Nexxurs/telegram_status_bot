@@ -92,12 +92,15 @@ def handle_chat_message(msg):
 
     msg_args = msg['text'].split(' ')
 
-    if msg_args[0] in functions:
-        functions[msg_args[0]](chat_id, msg_args)
-    elif _DEBUG and msg_args[0] in debug_functions:
-        debug_functions[msg_args[0]](chat_id, msg_args)
-    else:
-        bot.sendMessage(chat_id, "Error 404: Function not found!")
+    try:
+        if msg_args[0] in functions:
+            functions[msg_args[0]](chat_id, msg_args)
+        elif _DEBUG and msg_args[0] in debug_functions:
+            debug_functions[msg_args[0]](chat_id, msg_args)
+        else:
+            bot.sendMessage(chat_id, "Error 404: Function not found!")
+    except Exception as e:
+        bot.sendMessage(chat_id, "An Exception occured:\n"+str(e))
 
 
 def handle_callback_query(msg):
