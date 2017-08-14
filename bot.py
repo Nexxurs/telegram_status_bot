@@ -8,8 +8,8 @@ from telepot.loop import MessageLoop
 import helper
 import modules
 
-_VERSION = '0.1.3'
-_DEBUG = False
+_VERSION = '0.1.4-DEV'
+_DEBUG = True
 
 filePath = None
 admins = None
