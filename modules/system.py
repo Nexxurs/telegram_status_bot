@@ -44,7 +44,8 @@ class Module(CoreModule):
         if 'users' not in array:
             self._bot.sendMessage(chat_id, 'A problem occured: uptime is faulty\n'+out)
             _logger.warning("Faulty uptime: "+out)
-            return
+            return 
+
         uptime_endindex = array.index('users')-2
         loads_startindex = uptime_endindex+6
 
