@@ -8,6 +8,7 @@ _filePath = os.path.dirname(os.path.realpath(__file__))
 _bot = None
 _admins = []
 _module_manager = None
+_git_branch = None
 
 _logger = logging.getLogger(__name__)
 
@@ -35,6 +36,23 @@ def get_admins():
     return _admins
 
 
+def createHeader(version = 'No Version!'):
+    if _bot is None:
+        raise ReferenceError("Cannot create Header without Bot Context!")
+
+    me = _bot.getMe()
+    string = "\n"
+    string = string + "####################################################\n"
+    string = string + "   Name: " + me['first_name'] + "\n"
+    string = string + "   Username: " + me['username'] + "\n"
+    string = string + "   ID: " + str(me['id']) + "\n"
+    string = string + "   Branch: " + str(get_git_branch()) + "\n"
+    string = string + "   Version: " + str(version) + "\n"
+    string = string + "####################################################\n"
+    return string
+
+
+
 def execute(cmd):
     _logger.debug("Executing System Call %s",cmd)
     process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -45,11 +63,31 @@ def execute(cmd):
 
 
 def get_git_branch():
-    mod = _module_manager.get_module_by_name('git')
-    if mod is None:
-        return "No Git!"
-    else:
-        return mod.get_current_branch()
+    global _git_branch
+    if _git_branch is None:
+        mod = _module_manager.get_module_by_name('git')
+        if mod is None:
+            _git_branch = "No Git!"
+        else:
+            _git_branch = mod.get_current_branch()
+
+    return _git_branch
+
+
+def createHeader(version = 'No Version'):
+    if _bot is None:
+        raise ReferenceError("Cannot create Header without Bot Context!")
+
+    me = _bot.getMe()
+    string = "\n"
+    string = string + "################################################################\n"
+    string = string + "   Name:         " + me['first_name'] + "\n"
+    string = string + "   Username:   " + me['username'] + "\n"
+    string = string + "   ID:              " + str(me['id']) + "\n"
+    string = string + "   Branch:        " + str(get_git_branch()) + "\n"
+    string = string + "   Version:       " + str(version) + "\n"
+    string = string + "################################################################\n"
+    return string
 
 
 def send_admins(msg, except_this='', silent=False):

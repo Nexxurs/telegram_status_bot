@@ -1,14 +1,15 @@
 import config
 import logging
 import sys
+import os
 from time import sleep
 import telepot
 from telepot.loop import MessageLoop
 import helper
 import modules
 
-_VERSION = '0.1.2'
-_DEBUG = True
+_VERSION = '0.1.3'
+_DEBUG = False
 
 filePath = None
 admins = None
@@ -22,11 +23,14 @@ else:
     level = logging.INFO
 
 root = logging.getLogger('')
-root.setLevel(logging.DEBUG)
+root.setLevel(level)
 for h in root.handlers:
     root.removeHandler(h)
 
-file_handler = logging.FileHandler("log/telegram.log")
+log_dir = "log"
+if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+file_handler = logging.FileHandler(log_dir+'/telegram.log')
 file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
 file_handler.setLevel(logging.INFO)
 root.addHandler(file_handler)
@@ -39,27 +43,14 @@ root.addHandler(stream_handler)
 logger = logging.getLogger(__name__)
 
 
-def createHeader():
-    if bot is None:
-        raise ReferenceError("Cannot create Header without Bot Context!")
 
-    me = bot.getMe()
-    string = "\n"
-    string = string + "####################################################\n"
-    string = string + "   Name: " + me['first_name'] + "\n"
-    string = string + "   Username: " + me['username'] + "\n"
-    string = string + "   ID: " + str(me['id']) + "\n"
-    string = string + "   Branch: " + str(helper.get_git_branch()) + "\n"
-    string = string + "   Version: " + str(_VERSION) + "\n"
-    string = string + "####################################################\n"
-    return string
 
 
 def aboutme(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
         raise ReferenceError("Cannot create AboutMe without Bot Context!")
-    bot.sendMessage(chat_id, createHeader())
+    bot.sendMessage(chat_id, helper.createHeader(_VERSION))
 
 
 def show_debug(chat_id, args=None):
@@ -101,12 +92,15 @@ def handle_chat_message(msg):
 
     msg_args = msg['text'].split(' ')
 
-    if msg_args[0] in functions:
-        functions[msg_args[0]](chat_id, msg_args)
-    elif _DEBUG and msg_args[0] in debug_functions:
-        debug_functions[msg_args[0]](chat_id, msg_args)
-    else:
-        bot.sendMessage(chat_id, "Error 404: Function not found!")
+    try:
+        if msg_args[0] in functions:
+            functions[msg_args[0]](chat_id, msg_args)
+        elif _DEBUG and msg_args[0] in debug_functions:
+            debug_functions[msg_args[0]](chat_id, msg_args)
+        else:
+            bot.sendMessage(chat_id, "Error 404: Function not found!")
+    except Exception as e:
+        bot.sendMessage(chat_id, "An Exception occured:\n"+str(e))
 
 
 def handle_callback_query(msg):
@@ -145,7 +139,7 @@ if __name__ == '__main__':
     callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
 
     try:
-        logger.info(createHeader())
+        logger.info(helper.createHeader(_VERSION))
     except Exception as e:
         logger.exception("Cannot start Bot, Connection Error!")
         exit()
