@@ -8,8 +8,8 @@ from telepot.loop import MessageLoop
 import helper
 import modules
 
-_VERSION = '0.1.2'
-_DEBUG = True
+_VERSION = '0.1.3'
+_DEBUG = False
 
 filePath = None
 admins = None
@@ -23,7 +23,7 @@ else:
     level = logging.INFO
 
 root = logging.getLogger('')
-root.setLevel(logging.DEBUG)
+root.setLevel(level)
 for h in root.handlers:
     root.removeHandler(h)
 
