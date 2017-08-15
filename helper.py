@@ -1,31 +1,22 @@
 import subprocess
 import os
+import telepot
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 import logging
 import config
+import modules
 
 _filePath = os.path.dirname(os.path.realpath(__file__))
 _bot = None
-_admins = []
 _module_manager = None
 _git_branch = None
 
 _logger = logging.getLogger(__name__)
 
-restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
 
-
-def init(bot, module_manager):
-    global _bot
+def init(module_manager):
     global _module_manager
-    global _admins
-
-    _bot = bot
     _module_manager = module_manager
-
-    _admins = config.get_telegram_config()['Admins']
-    _admins = _admins.split(',')
 
 
 def get_file_path():
@@ -52,6 +43,19 @@ def createHeader(version = 'No Version!'):
     return string
 
 
+def create_bot():
+    global _bot
+    if _bot is None:
+        _bot = telepot.Bot(config.get_telegram_config()['Token'])
+    return _bot
+
+def create_module_manager():
+    global _module_manager
+    global _bot
+    if _module_manager is None:
+        _module_manager = modules.ModuleManager(bot=_bot)
+
+    return _module_manager
 
 def execute(cmd):
     _logger.debug("Executing System Call %s",cmd)
@@ -95,3 +99,13 @@ def send_admins(msg, except_this='', silent=False):
     for admin in _admins:
         if admin != except_this and len(admin) > 0:
             _bot.sendMessage(admin, msg, disable_notification=silent)
+
+
+_bot = create_bot()
+_module_manager = create_module_manager()
+
+restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
+
+_admins = config.get_telegram_config()['Admins']
+_admins = _admins.split(',')

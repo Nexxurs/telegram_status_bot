@@ -1,4 +1,3 @@
-import config
 import logging
 import sys
 import os
@@ -41,9 +40,6 @@ stream_handler.setLevel(logging.DEBUG)
 root.addHandler(stream_handler)
 
 logger = logging.getLogger(__name__)
-
-
-
 
 
 def aboutme(chat_id, args=None):
@@ -127,11 +123,10 @@ callback_functions = {}
 
 
 if __name__ == '__main__':
-    bot = telepot.Bot(config.get_telegram_config()['Token'])
+    bot = helper.create_bot()
 
     logger.debug("INIT Helper")
-    manager = modules.ModuleManager(bot=bot)
-    helper.init(bot=bot, module_manager=manager)
+    manager = helper.create_module_manager()
     admins = helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}
