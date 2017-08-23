@@ -34,6 +34,7 @@ def get_bot():
         _bot = telepot.Bot(config.get_telegram_config()['Token'])
     return _bot
 
+
 def create_module_manager():
     global _module_manager
     global _bot
@@ -41,6 +42,7 @@ def create_module_manager():
         _module_manager = modules.ModuleManager(bot=_bot)
 
     return _module_manager
+
 
 def execute(cmd):
     _logger.debug("Executing System Call %s",cmd)
@@ -77,7 +79,7 @@ def createHeader(version = 'No Version'):
     if len(model) > 0:
         string = string + "   " + model + '\n'
     else:
-        _logger.debug("Model Error: %s", model_err)
+        _logger.warning("Model Error: %s", model_err)
         string = string + '   Model not Found!\n'
 
     string = string + "   Bot-Name:  " + me['first_name'] + "\n"
