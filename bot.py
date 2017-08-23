@@ -5,10 +5,9 @@ from time import sleep
 import telepot
 from telepot.loop import MessageLoop
 import helper
-import modules
 
-_VERSION = '0.1.4-DEV'
-_DEBUG = True
+_VERSION = '0.1.4'
+_DEBUG = False
 
 filePath = None
 admins = None
