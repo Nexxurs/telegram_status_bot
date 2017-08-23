@@ -1,4 +1,3 @@
-import config
 import logging
 import sys
 import os
@@ -6,9 +5,8 @@ from time import sleep
 import telepot
 from telepot.loop import MessageLoop
 import helper
-import modules
 
-_VERSION = '0.1.3'
+_VERSION = '0.1.4'
 _DEBUG = False
 
 filePath = None
@@ -43,10 +41,7 @@ root.addHandler(stream_handler)
 logger = logging.getLogger(__name__)
 
 
-
-
-
-def aboutme(chat_id, args=None):
+def about_me(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
         raise ReferenceError("Cannot create AboutMe without Bot Context!")
@@ -120,18 +115,17 @@ def handle_callback_query(msg):
         bot.answerCallbackQuery(query_id, text="Error - Function not found!", show_alert=True)
 
 
-functions = {'/aboutme': aboutme,
+functions = {'/aboutme': about_me,
              '/debug': show_debug}
 debug_functions = {'/functions': get_functions}
 callback_functions = {}
 
 
 if __name__ == '__main__':
-    bot = telepot.Bot(config.get_telegram_config()['Token'])
+    bot = helper.get_bot()
 
     logger.debug("INIT Helper")
-    manager = modules.ModuleManager(bot=bot)
-    helper.init(bot=bot, module_manager=manager)
+    manager = helper.create_module_manager()
     admins = helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}

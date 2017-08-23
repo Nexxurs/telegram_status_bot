@@ -15,12 +15,14 @@ class Module(CoreModule):
         return path.isdir(self._filepath+'/.git')
 
     def get_chat_functions(self):
-        return {'/git_pull': self.pull}
+        return {'/git_pull': self.pull,
+                '/git_fetch': self.fetch}
 
     def pull(self, chat_id, args=None):
         # Define Branch! When None, Default pull!
         if self._filepath == '':
             print("Cannot pull without Filepath!")
+            self._bot.sendMessage(chat_id, "No Filepath for Git found! Check the Logs!")
             return
         if self._bot is None:
             raise ReferenceError("Cannot use Function without Bot Context!")

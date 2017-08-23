@@ -1,8 +1,8 @@
 import configparser
-import helper
+import os
 import logging
 
-_CONFIG_URL = helper.get_file_path() + "/config.ini"
+_CONFIG_URL = os.path.dirname(os.path.realpath(__file__)) + "/config.ini"
 
 logging.info("INIT Config at Path " + _CONFIG_URL)
 
