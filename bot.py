@@ -42,7 +42,7 @@ root.addHandler(stream_handler)
 logger = logging.getLogger(__name__)
 
 
-def aboutme(chat_id, args=None):
+def about_me(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
         raise ReferenceError("Cannot create AboutMe without Bot Context!")
@@ -116,14 +116,14 @@ def handle_callback_query(msg):
         bot.answerCallbackQuery(query_id, text="Error - Function not found!", show_alert=True)
 
 
-functions = {'/aboutme': aboutme,
+functions = {'/aboutme': about_me,
              '/debug': show_debug}
 debug_functions = {'/functions': get_functions}
 callback_functions = {}
 
 
 if __name__ == '__main__':
-    bot = helper.create_bot()
+    bot = helper.get_bot()
 
     logger.debug("INIT Helper")
     manager = helper.create_module_manager()
