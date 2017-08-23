@@ -18,7 +18,7 @@ class ModuleManager:
                 tmp_module = imp.Module(bot=bot)
                 self.module_list.append(tmp_module)
             except Exception:
-                _logger.exception("Found a bad module in modules folder %r", modname)
+                _logger.exception("Found a bad module in modules folder: %r", modname)
 
     def get_enabled(self):
         res = []
