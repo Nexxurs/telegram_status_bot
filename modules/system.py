@@ -6,7 +6,6 @@ import sys
 import helper
 from threading import Thread
 import telepot
-import socket
 import platform
 
 _logger = logging.getLogger(__name__)
@@ -31,7 +30,6 @@ class Module(CoreModule):
         return {'restart': self.callback_restart}
 
     def status(self, chat_id, args=None):
-        hostname = socket.gethostname()
         out, err = helper.execute('uptime')
 
         if len(err) > 0:
@@ -41,25 +39,20 @@ class Module(CoreModule):
         out = out.replace(',', '')
         array = out.split(' ')
 
-        if 'users' not in array:
-            self._bot.sendMessage(chat_id, 'A problem occured: uptime is faulty\n'+out)
-            _logger.warning("Faulty uptime: "+out)
-            return 
-
-        uptime_endindex = array.index('users')-2
+        uptime_endindex = -1
+        for i in array:
+            if str(i).startswith('user'):
+                uptime_endindex = array.index(i) - 2
+        if uptime_endindex < 0:
+            self._bot.sendMessage(chat_id, 'A problem occured: uptime is faulty\n' + out)
+            _logger.warning("Faulty uptime: " + out)
+            return
         loads_startindex = uptime_endindex+6
 
         uptime = array[2:uptime_endindex]
         loads = array[loads_startindex:]
 
         result = ''
-        model, model_err = helper.execute('cd '+helper.get_file_path()+' & scripts/model.sh')
-
-        if len(model) > 0:
-            result = result+model
-        else:
-            _logger.debug("Model Error: %s", model_err)
-        result = result + 'Hostname: ' + hostname + '\n'
         result = result + 'Uptime:   '
         for u in uptime:
             if len(u)>0:
