@@ -114,8 +114,6 @@ if __name__ == '__main__':
     debug_functions = {**manager.get_enabled_debug_chat_functions(), **debug_functions}
     callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
 
-    logger.info("Im listening...")
-
     logger.debug("INIT MessageLoop")
     MessageLoop(bot, {'chat': handle_chat_message,
                       'callback_query': handle_callback_query}).run_as_thread()
