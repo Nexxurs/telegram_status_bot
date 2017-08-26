@@ -33,8 +33,8 @@ class Module(CoreModule):
         out, err = helper.execute('uptime')
 
         if len(err) > 0:
-            self._bot.sendMessage(chat_id, "Error: "+err)
-            return 
+            self._bot.sendMessage(chat_id, "Error: " + err)
+            return
         out = out.strip()
         out = out.replace(',', '')
         array = out.split(' ')
@@ -47,7 +47,7 @@ class Module(CoreModule):
             self._bot.sendMessage(chat_id, 'A problem occured: uptime is faulty\n' + out)
             _logger.warning("Faulty uptime: " + out)
             return
-        loads_startindex = uptime_endindex+6
+        loads_startindex = uptime_endindex + 6
 
         uptime = array[2:uptime_endindex]
         loads = array[loads_startindex:]
@@ -55,7 +55,7 @@ class Module(CoreModule):
         result = ''
         result = result + 'Uptime:   '
         for u in uptime:
-            if len(u)>0:
+            if len(u) > 0:
                 result = result + u + ' '
         result = result + '\n'
         result = result + 'Loads:    '

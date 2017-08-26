@@ -45,7 +45,7 @@ def create_module_manager():
 
 
 def execute(cmd):
-    _logger.debug("Executing System Call %s",cmd)
+    _logger.debug("Executing System Call %s", cmd)
     process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              shell=True)
     out = process.stdout.decode('utf-8')
@@ -65,7 +65,7 @@ def get_git_branch():
     return _git_branch
 
 
-def createHeader(version = 'No Version'):
+def createHeader(version='No Version'):
     if _bot is None:
         raise ReferenceError("Cannot create Header without Bot Context!")
 
@@ -77,7 +77,7 @@ def createHeader(version = 'No Version'):
 
     model, model_err = execute('cd ' + get_file_path() + ' & scripts/model.sh')
     if len(model) > 0:
-        string = string + "   " + model + '\n'
+        string = string + "   " + model
     else:
         _logger.warning("Model Error: %s", model_err)
         string = string + '   Model not Found!\n'
