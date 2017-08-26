@@ -114,11 +114,7 @@ if __name__ == '__main__':
     debug_functions = {**manager.get_enabled_debug_chat_functions(), **debug_functions}
     callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
 
-    try:
-        logger.info(helper.createHeader(_VERSION))
-    except Exception as e:
-        logger.exception("Cannot start Bot, Connection Error!")
-        exit()
+    logger.info("Im listening...")
 
     logger.debug("INIT MessageLoop")
     MessageLoop(bot, {'chat': handle_chat_message,
