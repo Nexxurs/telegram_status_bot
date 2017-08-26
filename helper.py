@@ -6,6 +6,7 @@ import logging
 import config
 import modules
 import socket
+import sys
 
 _filePath = os.path.dirname(os.path.realpath(__file__))
 _bot = None
@@ -18,6 +19,26 @@ _logger = logging.getLogger(__name__)
 def init(module_manager):
     global _module_manager
     _module_manager = module_manager
+
+
+def config_logger(log_level=logging.INFO):
+    root = logging.getLogger('')
+    root.setLevel(log_level)
+    for h in root.handlers:
+        root.removeHandler(h)
+
+    log_dir = "log"
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    file_handler = logging.FileHandler(log_dir + '/telegram.log')
+    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
+    file_handler.setLevel(logging.INFO)
+    root.addHandler(file_handler)
+
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setFormatter(logging.Formatter('%(levelname)s - %(name)s - %(message)s'))
+    stream_handler.setLevel(logging.DEBUG)
+    root.addHandler(stream_handler)
 
 
 def get_file_path():
