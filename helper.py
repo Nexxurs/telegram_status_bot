@@ -13,6 +13,12 @@ _bot = None
 _module_manager = None
 _git_branch = None
 
+restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
+
+_admins = config.get_telegram_config()['Admins']
+_admins = _admins.split(',')
+
 _logger = logging.getLogger(__name__)
 
 
@@ -56,9 +62,8 @@ def get_bot():
     return _bot
 
 
-def create_module_manager():
+def get_module_manager():
     global _module_manager
-    global _bot
     if _module_manager is None:
         _module_manager = modules.ModuleManager(bot=_bot)
 
@@ -86,7 +91,7 @@ def get_git_branch():
     return _git_branch
 
 
-def createHeader(version='No Version'):
+def create_header(version='No Version'):
     if _bot is None:
         raise ReferenceError("Cannot create Header without Bot Context!")
 
@@ -119,11 +124,4 @@ def send_admins(msg, except_this='', silent=False):
             _bot.sendMessage(admin, msg, disable_notification=silent)
 
 
-_bot = get_bot()
-_module_manager = create_module_manager()
 
-restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
-
-_admins = config.get_telegram_config()['Admins']
-_admins = _admins.split(',')

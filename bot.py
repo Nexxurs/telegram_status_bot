@@ -27,7 +27,7 @@ def about_me(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
         raise ReferenceError("Cannot create AboutMe without Bot Context!")
-    bot.sendMessage(chat_id, helper.createHeader(_VERSION))
+    bot.sendMessage(chat_id, helper.create_header(_VERSION))
 
 
 def show_debug(chat_id, args=None):
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     bot = helper.get_bot()
 
     logger.debug("INIT Helper")
-    manager = helper.create_module_manager()
+    manager = helper.get_module_manager()
     admins = helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}
