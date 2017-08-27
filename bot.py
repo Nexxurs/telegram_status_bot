@@ -4,8 +4,8 @@ import telepot
 from telepot.loop import MessageLoop
 import helper
 
-_VERSION = '0.1.4'
-_DEBUG = True
+_VERSION = '0.1.5'
+_DEBUG = False
 
 filePath = None
 admins = None
