@@ -22,11 +22,6 @@ _admins = _admins.split(',')
 _logger = logging.getLogger(__name__)
 
 
-def init(module_manager):
-    global _module_manager
-    _module_manager = module_manager
-
-
 def config_logger(log_level=logging.INFO):
     root = logging.getLogger('')
     root.setLevel(log_level)
@@ -92,7 +87,7 @@ def get_git_branch():
 
 
 def create_header(version='No Version'):
-    me = _bot.getMe()
+    me = get_bot().getMe()
     string = ""
 
     string = string + "##############################################################\n"
@@ -116,9 +111,10 @@ def create_header(version='No Version'):
 
 def send_admins(msg, except_this='', silent=False):
     _logger.info("Send to all Admins (silent? %r): %s", silent, msg)
+    bot = get_bot()
     for admin in _admins:
         if admin != except_this and len(admin) > 0:
-            _bot.sendMessage(admin, msg, disable_notification=silent)
+            bot.sendMessage(admin, msg, disable_notification=silent)
 
 
 
