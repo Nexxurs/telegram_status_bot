@@ -1,12 +1,10 @@
 import logging
-import sys
-import os
 from time import sleep
 import telepot
 from telepot.loop import MessageLoop
 import helper
 
-_VERSION = '0.1.4'
+_VERSION = '0.1.5'
 _DEBUG = False
 
 filePath = None
@@ -20,23 +18,7 @@ if _DEBUG:
 else:
     level = logging.INFO
 
-root = logging.getLogger('')
-root.setLevel(level)
-for h in root.handlers:
-    root.removeHandler(h)
-
-log_dir = "log"
-if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-file_handler = logging.FileHandler(log_dir+'/telegram.log')
-file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
-file_handler.setLevel(logging.INFO)
-root.addHandler(file_handler)
-
-stream_handler = logging.StreamHandler(sys.stdout)
-stream_handler.setFormatter(logging.Formatter('%(levelname)s - %(name)s - %(message)s'))
-stream_handler.setLevel(logging.DEBUG)
-root.addHandler(stream_handler)
+helper.config_logger(level)
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +27,7 @@ def about_me(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
         raise ReferenceError("Cannot create AboutMe without Bot Context!")
-    bot.sendMessage(chat_id, helper.createHeader(_VERSION))
+    bot.sendMessage(chat_id, helper.create_header(_VERSION))
 
 
 def show_debug(chat_id, args=None):
@@ -125,18 +107,12 @@ if __name__ == '__main__':
     bot = helper.get_bot()
 
     logger.debug("INIT Helper")
-    manager = helper.create_module_manager()
+    manager = helper.get_module_manager()
     admins = helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}
     debug_functions = {**manager.get_enabled_debug_chat_functions(), **debug_functions}
     callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
-
-    try:
-        logger.info(helper.createHeader(_VERSION))
-    except Exception as e:
-        logger.exception("Cannot start Bot, Connection Error!")
-        exit()
 
     logger.debug("INIT MessageLoop")
     MessageLoop(bot, {'chat': handle_chat_message,

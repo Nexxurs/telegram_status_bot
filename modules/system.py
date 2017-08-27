@@ -33,8 +33,8 @@ class Module(CoreModule):
         out, err = helper.execute('uptime')
 
         if len(err) > 0:
-            self._bot.sendMessage(chat_id, "Error: "+err)
-            return 
+            self._bot.sendMessage(chat_id, "Error: " + err)
+            return
         out = out.strip()
         out = out.replace(',', '')
         array = out.split(' ')
@@ -47,7 +47,7 @@ class Module(CoreModule):
             self._bot.sendMessage(chat_id, 'A problem occured: uptime is faulty\n' + out)
             _logger.warning("Faulty uptime: " + out)
             return
-        loads_startindex = uptime_endindex+6
+        loads_startindex = uptime_endindex + 6
 
         uptime = array[2:uptime_endindex]
         loads = array[loads_startindex:]
@@ -55,13 +55,19 @@ class Module(CoreModule):
         result = ''
         result = result + 'Uptime:   '
         for u in uptime:
-            if len(u)>0:
+            if len(u) > 0:
                 result = result + u + ' '
         result = result + '\n'
         result = result + 'Loads:    '
         for l in loads:
             result = result + l + ' '
         result = result + '\n'
+
+        tmp, _ = helper.execute('/opt/vc/bin/vcgencmd measure_temp')
+        tmp = tmp.replace('temp=', '')
+        result = result + 'Temperature: ' + tmp + '\n'
+
+        result = result + 'Disk Usage: ' + get_disk_usage() + '\n'
 
         self._bot.sendMessage(chat_id, result)
 
@@ -91,3 +97,21 @@ def restart_soon():
     _logger.info("Restarting...")
     sleep(1)
     os.execv(sys.executable, [sys.executable] + sys.argv)
+
+
+def get_disk_usage():
+    out, err = helper.execute('df -h')
+    if err:
+        return 'Err: '+err
+    out = out.split('\n')
+    for l in out:
+        if l.startswith('/dev/root'):
+            line = l
+            break
+    else:
+        return 'Err: /dev/root not found in df!'
+
+    for obj in line.split(' '):
+        if obj.endswith('%'):
+            return obj
+

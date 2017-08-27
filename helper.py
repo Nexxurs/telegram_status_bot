@@ -6,18 +6,42 @@ import logging
 import config
 import modules
 import socket
+import sys
 
 _filePath = os.path.dirname(os.path.realpath(__file__))
 _bot = None
 _module_manager = None
 _git_branch = None
 
+restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
+
+_admins = config.get_telegram_config()['Admins']
+_admins = _admins.split(',')
+
 _logger = logging.getLogger(__name__)
 
 
-def init(module_manager):
-    global _module_manager
-    _module_manager = module_manager
+def config_logger(log_level=logging.INFO):
+    root = logging.getLogger('')
+    root.setLevel(log_level)
+    for h in root.handlers:
+        root.removeHandler(h)
+
+    log_dir = "log"
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    file_handler = logging.FileHandler(log_dir + '/telegram.log')
+    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
+    file_handler.setLevel(logging.INFO)
+    root.addHandler(file_handler)
+
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setFormatter(logging.Formatter('%(levelname)s - %(name)s - %(message)s'))
+    stream_handler.setLevel(logging.DEBUG)
+    root.addHandler(stream_handler)
+
+    _logger.debug('Logger Config Done')
 
 
 def get_file_path():
@@ -31,21 +55,22 @@ def get_admins():
 def get_bot():
     global _bot
     if _bot is None:
+        _logger.debug('Creating new Bot')
         _bot = telepot.Bot(config.get_telegram_config()['Token'])
     return _bot
 
 
-def create_module_manager():
+def get_module_manager():
     global _module_manager
-    global _bot
     if _module_manager is None:
+        _logger.debug('Creating new Module Manager')
         _module_manager = modules.ModuleManager(bot=_bot)
 
     return _module_manager
 
 
 def execute(cmd):
-    _logger.debug("Executing System Call %s",cmd)
+    _logger.debug("Executing System Call %s", cmd)
     process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              shell=True)
     out = process.stdout.decode('utf-8')
@@ -61,15 +86,13 @@ def get_git_branch():
             _git_branch = "No Git!"
         else:
             _git_branch = mod.get_current_branch()
+        _logger.debug('Created Git Branch: '+_git_branch)
 
     return _git_branch
 
 
-def createHeader(version = 'No Version'):
-    if _bot is None:
-        raise ReferenceError("Cannot create Header without Bot Context!")
-
-    me = _bot.getMe()
+def create_header(version='No Version'):
+    me = get_bot().getMe()
     string = ""
 
     string = string + "##############################################################\n"
@@ -77,7 +100,7 @@ def createHeader(version = 'No Version'):
 
     model, model_err = execute('cd ' + get_file_path() + ' & scripts/model.sh')
     if len(model) > 0:
-        string = string + "   " + model + '\n'
+        string = string + "   " + model
     else:
         _logger.warning("Model Error: %s", model_err)
         string = string + '   Model not Found!\n'
@@ -93,16 +116,10 @@ def createHeader(version = 'No Version'):
 
 def send_admins(msg, except_this='', silent=False):
     _logger.info("Send to all Admins (silent? %r): %s", silent, msg)
+    bot = get_bot()
     for admin in _admins:
         if admin != except_this and len(admin) > 0:
-            _bot.sendMessage(admin, msg, disable_notification=silent)
+            bot.sendMessage(admin, msg, disable_notification=silent)
 
 
-_bot = get_bot()
-_module_manager = create_module_manager()
 
-restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
-
-_admins = config.get_telegram_config()['Admins']
-_admins = _admins.split(',')
