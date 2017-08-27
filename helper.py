@@ -96,7 +96,6 @@ def create_header(version='No Version'):
     string = ""
 
     string = string + "##############################################################\n"
-    string = string + "   Hostname:  " + socket.gethostname() + "\n"
 
     model, model_err = execute('cd ' + get_file_path() + ' & scripts/model.sh')
     if len(model) > 0:
@@ -105,9 +104,12 @@ def create_header(version='No Version'):
         _logger.warning("Model Error: %s", model_err)
         string = string + '   Model not Found!\n'
 
+    string = string + "   Hostname:  " + socket.gethostname() + "\n\n"
+
     string = string + "   Bot-Name:  " + me['first_name'] + "\n"
     string = string + "   Username:  " + me['username'] + "\n"
-    string = string + "   ID:        " + str(me['id']) + "\n"
+    string = string + "   ID:        " + str(me['id']) + "\n\n"
+
     string = string + "   Branch:    " + str(get_git_branch()) + "\n"
     string = string + "   Version:   " + str(version) + "\n"
     string = string + "##############################################################\n"

@@ -65,7 +65,7 @@ class Module(CoreModule):
 
         tmp, _ = helper.execute('/opt/vc/bin/vcgencmd measure_temp')
         tmp = tmp.replace('temp=', '')
-        result = result + 'Temperature: ' + tmp + '\n'
+        result = result + 'Temperature: ' + tmp
 
         result = result + 'Disk Usage: ' + get_disk_usage() + '\n'
 
