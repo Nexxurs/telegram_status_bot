@@ -41,6 +41,8 @@ def config_logger(log_level=logging.INFO):
     stream_handler.setLevel(logging.DEBUG)
     root.addHandler(stream_handler)
 
+    _logger.debug('Logger Config Done')
+
 
 def get_file_path():
     return _filePath
@@ -53,6 +55,7 @@ def get_admins():
 def get_bot():
     global _bot
     if _bot is None:
+        _logger.debug('Creating new Bot')
         _bot = telepot.Bot(config.get_telegram_config()['Token'])
     return _bot
 
@@ -60,6 +63,7 @@ def get_bot():
 def get_module_manager():
     global _module_manager
     if _module_manager is None:
+        _logger.debug('Creating new Module Manager')
         _module_manager = modules.ModuleManager(bot=_bot)
 
     return _module_manager
@@ -82,6 +86,7 @@ def get_git_branch():
             _git_branch = "No Git!"
         else:
             _git_branch = mod.get_current_branch()
+        _logger.debug('Created Git Branch: '+_git_branch)
 
     return _git_branch
 
