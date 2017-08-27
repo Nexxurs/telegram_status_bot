@@ -92,9 +92,6 @@ def get_git_branch():
 
 
 def create_header(version='No Version'):
-    if _bot is None:
-        raise ReferenceError("Cannot create Header without Bot Context!")
-
     me = _bot.getMe()
     string = ""
 
