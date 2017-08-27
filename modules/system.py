@@ -63,6 +63,10 @@ class Module(CoreModule):
             result = result + l + ' '
         result = result + '\n'
 
+        tmp, _ = helper.execute('/opt/vc/bin/vcgencmd measure_temp')
+        tmp = tmp.replace('temp=', '')
+        result = result + 'Temperature: ' + tmp + '\n'
+
         self._bot.sendMessage(chat_id, result)
 
     def restart(self, chat_id, args=None):
