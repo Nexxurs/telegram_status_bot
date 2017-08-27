@@ -67,6 +67,8 @@ class Module(CoreModule):
         tmp = tmp.replace('temp=', '')
         result = result + 'Temperature: ' + tmp + '\n'
 
+        result = result + 'Disk Usage: ' + get_disk_usage() + '\n'
+
         self._bot.sendMessage(chat_id, result)
 
     def restart(self, chat_id, args=None):
@@ -95,3 +97,21 @@ def restart_soon():
     _logger.info("Restarting...")
     sleep(1)
     os.execv(sys.executable, [sys.executable] + sys.argv)
+
+
+def get_disk_usage():
+    out, err = helper.execute('df -h')
+    if err:
+        return 'Err: '+err
+    out = out.split('\n')
+    for l in out:
+        if l.startswith('/dev/root'):
+            line = l
+            break
+    else:
+        return 'Err: /dev/root not found in df!'
+
+    for obj in line.split(' '):
+        if obj.endswith('%'):
+            return obj
+
