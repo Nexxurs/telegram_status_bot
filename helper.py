@@ -27,8 +27,6 @@ except KeyError as e:
     raise RuntimeError(err_msg)
 
 
-
-
 def config_logger(log_level=logging.INFO):
     root = logging.getLogger('')
     root.setLevel(log_level)
