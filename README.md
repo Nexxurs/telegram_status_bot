@@ -1,5 +1,12 @@
 telegram_status_bot
 
+Requirements:
+Telepot
+
+Todo:
+Sudo notwendig für mkdir log!
+Disk Usage ändern!
+
 
 for Botfather:
 aboutme - get static informations
