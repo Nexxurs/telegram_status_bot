@@ -8,6 +8,8 @@ import modules
 import socket
 import sys
 
+_logger = logging.getLogger(__name__)
+
 _filePath = os.path.dirname(os.path.realpath(__file__))
 _bot = None
 _module_manager = None
@@ -16,10 +18,15 @@ _git_branch = None
 restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
 
-_admins = config.get_telegram_config()['Admins']
-_admins = _admins.split(',')
+try:
+    _admins = config.get_telegram_config()['Admins']
+    _admins = _admins.split(',')
+except KeyError as e:
+    err_msg = "Cannot load Admins from Config! Key {} does not exist".format(e)
+    _logger.error(err_msg)
+    raise RuntimeError(err_msg)
 
-_logger = logging.getLogger(__name__)
+
 
 
 def config_logger(log_level=logging.INFO):
