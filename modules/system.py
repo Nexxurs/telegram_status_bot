@@ -101,13 +101,13 @@ def restart_soon():
 
 
 def get_disk_usage():
-    out, err = helper.execute('df -h | awk \'$NF=="/"{printf "%d/%dGB (%s)\n", $3,$2,$5}\'')
+    out, err = helper.execute('df -h | awk \'$NF=="/"{printf "%d/%dGB (%s)", $3,$2,$5}\'')
     if err:
         return 'Err: '+err
     return out
 
 def get_memory_usage():
-    out, err = helper.execute('free -m | awk \'NR==2{printf "Memory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }\'')
+    out, err = helper.execute('free -m | awk \'NR==2{printf "Memory Usage: %s/%sMB (%.2f%%)", $3,$2,$3*100/$2 }\'')
     if err:
         return 'Err: ' + err
     return out
