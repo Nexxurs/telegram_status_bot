@@ -8,6 +8,8 @@ import modules
 import socket
 import sys
 
+_logger = logging.getLogger(__name__)
+
 _filePath = os.path.dirname(os.path.realpath(__file__))
 _bot = None
 _module_manager = None
@@ -16,10 +18,13 @@ _git_branch = None
 restart_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="Restart now", callback_data="restart")]])
 
-_admins = config.get_telegram_config()['Admins']
-_admins = _admins.split(',')
-
-_logger = logging.getLogger(__name__)
+try:
+    _admins = config.get_telegram_config()['Admins']
+    _admins = _admins.split(',')
+except KeyError as e:
+    err_msg = "Cannot load Admins from Config! Key {} does not exist".format(e)
+    _logger.error(err_msg)
+    raise RuntimeError(err_msg)
 
 
 def config_logger(log_level=logging.INFO):
@@ -96,7 +101,6 @@ def create_header(version='No Version'):
     string = ""
 
     string = string + "##############################################################\n"
-    string = string + "   Hostname:  " + socket.gethostname() + "\n"
 
     model, model_err = execute('cd ' + get_file_path() + ' & scripts/model.sh')
     if len(model) > 0:
@@ -105,9 +109,12 @@ def create_header(version='No Version'):
         _logger.warning("Model Error: %s", model_err)
         string = string + '   Model not Found!\n'
 
+    string = string + "   Hostname:  " + socket.gethostname() + "\n\n"
+
     string = string + "   Bot-Name:  " + me['first_name'] + "\n"
     string = string + "   Username:  " + me['username'] + "\n"
-    string = string + "   ID:        " + str(me['id']) + "\n"
+    string = string + "   ID:        " + str(me['id']) + "\n\n"
+
     string = string + "   Branch:    " + str(get_git_branch()) + "\n"
     string = string + "   Version:   " + str(version) + "\n"
     string = string + "##############################################################\n"

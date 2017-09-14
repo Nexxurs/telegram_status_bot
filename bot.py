@@ -4,7 +4,7 @@ import telepot
 from telepot.loop import MessageLoop
 import helper
 
-_VERSION = '0.1.5'
+_VERSION = '0.1.6'
 _DEBUG = False
 
 filePath = None
