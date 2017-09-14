@@ -106,6 +106,7 @@ def get_disk_usage():
         return 'Err: '+err
     return out
 
+
 def get_memory_usage():
     out, err = helper.execute('free -m | awk \'NR==2{printf "%s/%sMB (%.2f%%)", $3,$2,$3*100/$2 }\'')
     if err:
