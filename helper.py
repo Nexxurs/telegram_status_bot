@@ -102,7 +102,7 @@ def create_header(version='No Version'):
 
     string = string + "##############################################################\n"
 
-    model, model_err = execute('cd ' + get_file_path() + ' & scripts/model.sh')
+    model, model_err = execute(get_file_path() + '/scripts/model.sh')
     if len(model) > 0:
         string = string + "   " + model
     else:
