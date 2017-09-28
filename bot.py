@@ -97,8 +97,9 @@ def handle_callback_query(msg):
 
 
 functions = {'/aboutme': about_me,
+             '/functions': get_functions,
              '/debug': show_debug}
-debug_functions = {'/functions': get_functions}
+debug_functions = {}
 callback_functions = {}
 
 
