@@ -12,7 +12,12 @@ class Module(CoreModule):
         self._filepath = helper.get_file_path()
 
     def is_enabled(self):
-        return path.isdir(self._filepath+'/.git')
+        if not path.isdir(self._filepath+'/.git'):
+            return False
+
+        _, err = helper.execute('git --version')
+
+        return len(err) == 0
 
     def get_chat_functions(self):
         return {'/git_pull': self.pull,

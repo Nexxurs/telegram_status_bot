@@ -4,8 +4,8 @@ import telepot
 from telepot.loop import MessageLoop
 import helper
 
-_VERSION = '0.1.7'
-_DEBUG = False
+_VERSION = '0.1.7-ModulesHF'
+_DEBUG = True
 
 admins = None
 bot = None
@@ -97,8 +97,9 @@ def handle_callback_query(msg):
 
 
 functions = {'/aboutme': about_me,
+             '/functions': get_functions,
              '/debug': show_debug}
-debug_functions = {'/functions': get_functions}
+debug_functions = {}
 callback_functions = {}
 
 
