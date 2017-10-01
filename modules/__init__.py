@@ -17,6 +17,7 @@ class ModuleManager:
                 imp = importlib.import_module(__package__ + '.' + modname)
                 tmp_module = imp.Module(bot=bot)
                 self.module_list.append(tmp_module)
+                _logger.info("Imported Module %s", modname)
             except Exception as e:
                 _logger.exception("Can't import %r. Exception: %r", modname, e)
 
