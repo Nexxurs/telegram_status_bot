@@ -4,7 +4,7 @@ import telepot
 from telepot.loop import MessageLoop
 import helper
 
-_VERSION = '0.1.8-dev'
+_VERSION = '0.1.7-ModulesHF'
 _DEBUG = True
 
 admins = None
