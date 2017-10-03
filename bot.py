@@ -43,11 +43,11 @@ def show_debug(chat_id, args=None):
 
 def get_functions(chat_id, args=None):
     res = 'Here are all available functions:\n\n'
-    for f in functions.keys():
+    for f in sorted(functions.keys()):
         res = res+f+'\n'
     if _DEBUG:
         res = res+"-----------\n"
-        for f in debug_functions.keys():
+        for f in sorted(debug_functions.keys()):
             res = res+f+'\n'
     bot.sendMessage(chat_id, res)
 
