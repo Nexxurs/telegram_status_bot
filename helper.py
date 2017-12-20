@@ -74,6 +74,16 @@ def get_module_manager():
     return _module_manager
 
 
+def can_connect(hostname):
+    import socket
+    try:
+        host = socket.gethostbyname(hostname)
+        socket.create_connection((host, 80), 2)
+        return True
+    except socket.gaierror:
+        return False
+
+
 def execute(cmd):
     _logger.debug("Executing System Call %s", cmd)
     process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,

@@ -3,6 +3,7 @@ from time import sleep
 import telepot
 from telepot.loop import MessageLoop
 import helper
+import urllib3
 
 _VERSION = '0.1.8-dev'
 _DEBUG = True
@@ -113,6 +114,10 @@ if __name__ == '__main__':
     functions = {**manager.get_enabled_chat_functions(), **functions}
     debug_functions = {**manager.get_enabled_debug_chat_functions(), **debug_functions}
     callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
+
+    logger.debug("Checking/Waiting for Connection...")
+    while not helper.can_connect("http://api.telegram.org"):
+        sleep(1)
 
     logger.debug("INIT MessageLoop")
     MessageLoop(bot, {'chat': handle_chat_message,
