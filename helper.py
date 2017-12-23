@@ -11,6 +11,7 @@ import sys
 _logger = logging.getLogger(__name__)
 
 _filePath = os.path.dirname(os.path.realpath(__file__))
+_logger.debug("Filepath: "+_filePath)
 _bot = None
 _module_manager = None
 _git_branch = None

@@ -1,22 +1,25 @@
 import importlib
 import pkgutil
 import logging
+import os
 
 _logger = logging.getLogger(__name__)
-
+_module_path = os.path.dirname(os.path.realpath(__file__))
 
 class ModuleManager:
     def __init__(self, bot):
+        _logger.debug('Initializing ModuleManager with Path {}'.format(_module_path))
         self.bot = bot
 
         self.module_list = []
 
-        for importer, modname, ispkg in pkgutil.iter_modules([__package__]):
+        for importer, modname, ispkg in pkgutil.iter_modules([_module_path]):
             _logger.debug("Found submodule %s (is a package: %s)", modname, ispkg)
             try:
                 imp = importlib.import_module(__package__ + '.' + modname)
                 tmp_module = imp.Module(bot=bot)
                 self.module_list.append(tmp_module)
+                _logger.info("Imported Module %s", modname)
             except Exception as e:
                 _logger.exception("Can't import %r. Exception: %r", modname, e)
 
