@@ -5,7 +5,7 @@ from telepot.loop import MessageLoop
 import helper
 import urllib3
 
-_VERSION = '0.1.7-ModulesHF'
+_VERSION = '0.1.8-DEV'
 _DEBUG = True
 
 admins = None
