@@ -116,7 +116,7 @@ if __name__ == '__main__':
     callback_functions = {**manager.get_enabled_callback_functions(), **callback_functions}
 
     logger.debug("Checking/Waiting for Connection...")
-    while not helper.can_connect("http://api.telegram.org"):
+    while not helper.can_connect("telegram.org"):
         sleep(1)
 
     logger.debug("INIT MessageLoop")
