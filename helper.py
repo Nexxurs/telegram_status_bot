@@ -28,19 +28,20 @@ except KeyError as e:
     raise RuntimeError(err_msg)
 
 
-def config_logger(log_level=logging.INFO):
+def config_logger(log_level=logging.INFO, to_File=True):
     root = logging.getLogger('')
     root.setLevel(log_level)
     for h in root.handlers:
         root.removeHandler(h)
 
-    log_dir = "log"
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-    file_handler = logging.FileHandler(log_dir + '/telegram.log')
-    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
-    file_handler.setLevel(logging.INFO)
-    root.addHandler(file_handler)
+    if to_File:
+        log_dir = "log"
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        file_handler = logging.FileHandler(log_dir + '/telegram.log')
+        file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
+        file_handler.setLevel(logging.INFO)
+        root.addHandler(file_handler)
 
     stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setFormatter(logging.Formatter('%(levelname)s - %(name)s - %(message)s'))
