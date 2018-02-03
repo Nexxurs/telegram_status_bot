@@ -16,9 +16,6 @@ class CoreModule:
     def get_callback_functions(self):
         return {}
 
-    def on_message(self, chat_id, args=None):
-        pass
-
 
 # For Copy-Paste!
 class Module(CoreModule):
