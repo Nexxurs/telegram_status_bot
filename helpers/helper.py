@@ -14,7 +14,10 @@ _module_manager = None
 def config_logger(log_level=logging.INFO, to_File=True):
     root = logging.getLogger('')
     root.setLevel(log_level)
-    for h in root.handlers:
+
+    handlerList = root.handlers[:]
+    for h in handlerList:
+        h.close()
         root.removeHandler(h)
 
     if to_File:
