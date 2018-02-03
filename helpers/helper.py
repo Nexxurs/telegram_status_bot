@@ -1,7 +1,6 @@
 import logging
 from pathlib import Path
 import sys
-import subprocess
 import modules
 from helpers import bot as bot_helper
 
@@ -38,8 +37,10 @@ def config_logger(log_level=logging.INFO, to_File=True):
 def getBotRoot():
     return str(_botRootPath)
 
+
 def getBotRootPath():
     return _botRootPath
+
 
 def can_connect(hostname):
     import socket
@@ -50,13 +51,6 @@ def can_connect(hostname):
     except socket.gaierror:
         return False
 
-def execute(cmd):
-    _logger.debug("Executing System Call %s", cmd)
-    process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             shell=True)
-    out = process.stdout.decode('utf-8')
-    err = process.stderr.decode('utf-8')
-    return out, err
 
 def get_module_manager():
     global _module_manager
