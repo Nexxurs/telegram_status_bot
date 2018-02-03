@@ -1,10 +1,24 @@
 import importlib
 import pkgutil
 import logging
-import os
+from pathlib import Path
 
 _logger = logging.getLogger(__name__)
-_module_path = os.path.dirname(os.path.realpath(__file__))
+
+_module_path = Path(__file__).parent # Creates a new PurePath Object, which will be casted back into a Path Object
+_module_path = Path(_module_path)
+
+
+def getModuleDirs():
+    module_dirs = []
+    possible_dirs = ['Core', 'User']
+
+    for d in possible_dirs:
+        path = _module_path / d
+        if path.exists():
+            module_dirs.append(path._str)
+
+    return module_dirs
 
 class ModuleManager:
     def __init__(self, bot):
@@ -13,11 +27,14 @@ class ModuleManager:
 
         self.module_list = []
 
-        for importer, modname, ispkg in pkgutil.iter_modules([_module_path]):
+        for importer, modname, ispkg in pkgutil.iter_modules(getModuleDirs()):
             _logger.debug("Found submodule %s (is a package: %s)", modname, ispkg)
             try:
-                imp = importlib.import_module(__package__ + '.' + modname)
-                tmp_module = imp.Module(bot=bot)
+                spec = importer.find_spec(modname)
+                imported_module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(imported_module)
+
+                tmp_module = imported_module.Module(bot=bot)
                 self.module_list.append(tmp_module)
                 _logger.info("Imported Module %s", modname)
             except Exception as e:

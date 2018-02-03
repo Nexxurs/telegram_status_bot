@@ -8,3 +8,5 @@ config\.ini
 test\.py
 
 log/
+
+modules/User
