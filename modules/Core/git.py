@@ -1,4 +1,5 @@
-import helper
+from helpers import executor, helper
+from helpers import keyboard as keyboard_helper
 import logging
 from modules.core_module import CoreModule
 from os import path
@@ -10,7 +11,7 @@ _logger = logging.getLogger(__name__)
 class Module(CoreModule):
     def __init__(self, bot):
         super().__init__(bot)
-        self._filepath = helper.get_file_path()
+        self._filepath = helper.getBotRoot()
 
     def is_enabled(self):
         if not config.getboolean('Core_Modules_Enable', __name__, fallback=False):
@@ -19,9 +20,8 @@ class Module(CoreModule):
         if not path.isdir(self._filepath+'/.git'):
             return False
 
-        _, err = helper.execute('git --version')
-
-        return len(err) == 0
+        process = executor.execute('git --version')
+        return process.returncode == 0
 
     def get_chat_functions(self):
         return {'/git_pull': self.pull,
@@ -39,30 +39,32 @@ class Module(CoreModule):
         if len(args) > 1:
             branch = args[1]
             _logger.info("Checkout new Branch %s from Git", branch)
-            out, err = helper.execute("cd " + self._filepath + " && git checkout " + branch + " && git pull")
+            process = executor.execute("cd " + self._filepath + " && git checkout " + branch + " && git pull")
         else:
             _logger.info("Pulling updates from Git")
-            out, err = helper.execute("cd " + self._filepath + " && git pull")
+            process = executor.execute("cd " + self._filepath + " && git pull")
 
-        if len(err) > 0:
-            result = err + "\n\n" + out
+        if len(process.stderr) > 0:
+            result = process.stderr + "\n\n" + process.stdout
         else:
-            result = out
+            result = process.stdout
+
+        markup_keyboard = keyboard_helper.createSingleChoice("Restart Now", "restart")
         self._bot.sendMessage(chat_id, result + "\nTask finished! Do you want to restart now?",
-                              reply_markup=helper.restart_keyboard)
+                              reply_markup=markup_keyboard)
 
     def fetch(self, chat_id, args=None):
-        out, err = helper.execute("cd " + self._filepath + " && git fetch")
-        if len(err) > 0:
-            result = err + "\n\n" + out
+        process = executor.execute("cd " + self._filepath + " && git fetch")
+        if len(process.stderr) > 0:
+            result = process.stderr + "\n\n" + process.stdout
         else:
-            result = out
+            result = process.stdout
         self._bot.sendMessage(chat_id, result + "\nTask finished!")
 
     def get_current_branch(self):
         _logger.info("Getting Current Git Branch")
-        out, err = helper.execute("cd " + self._filepath + " && git symbolic-ref HEAD")
-        if len(err) > 0:
+        process = executor.execute("cd " + self._filepath + " && git symbolic-ref HEAD")
+        if process.returncode != 0:
             return "No Git!"
-        l = out.split('/')
+        l = process.stdout.split('/')
         return '/'.join(l[2:]).strip()

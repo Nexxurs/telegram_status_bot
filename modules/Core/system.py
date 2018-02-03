@@ -3,11 +3,11 @@ from modules.core_module import CoreModule
 from time import sleep
 import os
 import sys
-import helper
 from threading import Thread
 import telepot
 import platform
 from config import config
+from helpers import bot as bot_helper, executor
 
 _logger = logging.getLogger(__name__)
 
@@ -43,9 +43,9 @@ class Module(CoreModule):
         def shutdown_soon():
             _logger.info("Shutdown System...")
             sleep(1)
-            helper.execute("shutdown now")
+            executor.execute("shutdown now")
 
-        helper.send_admins("Shutting down System!")
+        bot_helper.send_admins("Shutting down System!")
         t = Thread(target=shutdown_soon)
         t.start()
 
@@ -53,14 +53,14 @@ class Module(CoreModule):
         def restart_soon():
             _logger.info("Restarting System...")
             sleep(1)
-            helper.execute("shutdown -r now")
+            executor.execute("shutdown -r now")
 
-        helper.send_admins("Restarting System!")
+        bot_helper.send_admins("Restarting System!")
         t = Thread(target=restart_soon)
         t.start()
 
     def status(self, chat_id, args=None):
-        out, err = helper.execute('uptime')
+        out, err = executor.execute('uptime')
 
         if len(err) > 0:
             self._bot.sendMessage(chat_id, "Error: " + err)
@@ -93,9 +93,9 @@ class Module(CoreModule):
             result = result + l + ' '
         result = result + '\n'
 
-        tmp, _ = helper.execute('/opt/vc/bin/vcgencmd measure_temp')
-        tmp = tmp.replace('temp=', '')
-        result = result + 'Temperature: ' + tmp
+        temp_proc = executor.execute('/opt/vc/bin/vcgencmd measure_temp')
+        temp = temp_proc.stdout.replace('temp=', '')
+        result = result + 'Temperature: ' + temp
         result = result + 'Disk Usage: ' + get_disk_usage() + '\n'
         result = result + 'Memory Usage: ' + get_memory_usage() + '\n'
 
@@ -104,7 +104,7 @@ class Module(CoreModule):
     def restart(self, chat_id, args=None):
         self._bot.sendMessage(chat_id, "Restarting... ")
 
-        helper.send_admins("Just fyi: Someone ordered me to restart!", except_this=chat_id)
+        bot_helper.send_admins("Just fyi: Someone ordered me to restart!", except_this=chat_id)
 
         t = Thread(target=restart_program_soon)
         t.start()
@@ -117,7 +117,7 @@ class Module(CoreModule):
         from_id = str(from_id)
 
         self._bot.answerCallbackQuery(query_id, text="Restarting... ")
-        helper.send_admins("Just fyi: Someone ordered me to restart!", except_this=from_id)
+        bot_helper.send_admins("Just fyi: Someone ordered me to restart!", except_this=from_id)
 
         t = Thread(target=restart_program_soon)
         t.start()
@@ -130,14 +130,14 @@ def restart_program_soon():
 
 
 def get_disk_usage():
-    out, err = helper.execute('df -h | awk \'$NF=="/"{printf "%d/%dGB (%s)", $3,$2,$5}\'')
-    if err:
-        return 'Err: '+err
-    return out
+    proc = executor.execute('df -h | awk \'$NF=="/"{printf "%d/%dGB (%s)", $3,$2,$5}\'')
+    if proc.returncode != 0:
+        return 'Err: '+proc.stderr
+    return proc.stdout
 
 
 def get_memory_usage():
-    out, err = helper.execute('free -m | awk \'NR==2{printf "%s/%sMB (%.2f%%)", $3,$2,$3*100/$2 }\'')
-    if err:
-        return 'Err: ' + err
-    return out
+    proc = executor.execute('free -m | awk \'NR==2{printf "%s/%sMB (%.2f%%)", $3,$2,$3*100/$2 }\'')
+    if proc.returncode != 0:
+        return 'Err: '+proc.stderr
+    return proc.stdout

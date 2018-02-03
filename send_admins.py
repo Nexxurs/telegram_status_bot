@@ -1,4 +1,4 @@
-import helper
+from helpers import helper, bot as bot_helper
 import sys
 import logging
 import argparse
@@ -17,5 +17,5 @@ if __name__ == '__main__':
 
     msg = ' '.join(args.text)
     logger.info("Sending Message: "+msg)
-    helper.send_admins(msg, silent=args.silent)
+    bot_helper.send_admins(msg, silent=args.silent)
 

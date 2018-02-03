@@ -2,8 +2,7 @@ import logging
 from time import sleep
 import telepot
 from telepot.loop import MessageLoop
-import helper
-import urllib3
+from helpers import helper, header as header_helper, bot as bot_helper
 
 _VERSION = '0.1.8-DEV'
 _DEBUG = True
@@ -27,7 +26,7 @@ def about_me(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
         raise ReferenceError("Cannot create AboutMe without Bot Context!")
-    bot.sendMessage(chat_id, helper.create_header(_VERSION))
+    bot.sendMessage(chat_id, header_helper.create_header(_VERSION))
 
 
 def show_debug(chat_id, args=None):
@@ -105,11 +104,11 @@ callback_functions = {}
 
 
 if __name__ == '__main__':
-    bot = helper.get_bot()
+    bot = bot_helper.get_bot()
 
     logger.debug("INIT Helper")
     manager = helper.get_module_manager()
-    admins = helper.get_admins()
+    #admins = bot_helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}
     debug_functions = {**manager.get_enabled_debug_chat_functions(), **debug_functions}
@@ -125,7 +124,7 @@ if __name__ == '__main__':
     logger.info('Listening ...')
 
     # Say Hello to our Admins!
-    helper.send_admins("I'm Back!", silent=True)
+    bot_helper.send_admins("I'm Back!", silent=True)
 
     # Keep the program running.
     while 1:
