@@ -2,6 +2,7 @@ import helper
 import logging
 from modules.core_module import CoreModule
 from os import path
+from config import config
 
 _logger = logging.getLogger(__name__)
 
@@ -12,6 +13,9 @@ class Module(CoreModule):
         self._filepath = helper.get_file_path()
 
     def is_enabled(self):
+        if not config.getboolean('Core_Modules_Enable', __name__, fallback=False):
+            return False
+
         if not path.isdir(self._filepath+'/.git'):
             return False
 
