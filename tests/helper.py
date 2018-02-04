@@ -22,6 +22,10 @@ class HelperTest(unittest.TestCase):
 
         self.assertGreater(countWithFile, countWithoutFile)
 
+    def test_can_connect(self):
+        self.assertFalse(helper.can_connect("doesnt_exist"))
+        self.assertTrue(helper.can_connect("www.google.com"))
+
 
 
 if __name__ == '__main__':

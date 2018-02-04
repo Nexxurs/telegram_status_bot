@@ -49,7 +49,7 @@ def can_connect(hostname):
     import socket
     try:
         host = socket.gethostbyname(hostname)
-        socket.create_connection((host, 80), 2)
+        socket.create_connection((host, 80), 2).close()
         return True
     except socket.gaierror:
         return False

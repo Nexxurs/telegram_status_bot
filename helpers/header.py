@@ -1,7 +1,7 @@
 import logging
 import socket
 from helpers import bot as bot_helper
-from helpers import helper
+from helpers import helper, executor as executor_helper
 
 _logger = logging.getLogger(__name__)
 _git_branch = None
@@ -24,11 +24,11 @@ def create_header(version='No Version'):
 
     string = string + "##############################################################\n"
 
-    model, model_err = helper.execute(str(helper.getBotRootPath() / 'scripts' / 'model.sh'))
-    if len(model) > 0:
-        string = string + "   " + model
+    model_proc = executor_helper.execute(str(helper.getBotRootPath() / 'scripts' / 'model.sh'))
+    if model_proc.returncode != 0:
+        string = string + "   " + model_proc.stdout
     else:
-        _logger.warning("Model Error: %s", model_err)
+        _logger.warning("Model Error: %s", model_proc.stderr)
         string = string + '   Model not Found!\n'
 
     string = string + "   Hostname:  " + socket.gethostname() + "\n\n"
