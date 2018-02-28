@@ -18,6 +18,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     msg = ' '.join(args.text)
+    msg = msg.replace('\\n', '\n')
     logger.info("Sending Message: "+msg)
     bot_helper.send_admins(msg, silent=args.silent)
 
