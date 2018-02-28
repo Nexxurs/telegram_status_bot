@@ -2,15 +2,12 @@ import logging
 from time import sleep
 import telepot
 from telepot.loop import MessageLoop
-import helper
-import urllib3
+from helpers import helper, header as header_helper, bot as bot_helper
 
 _VERSION = '0.1.8-DEV'
 _DEBUG = True
 
-admins = None
 bot = None
-
 
 # Logger INIT
 if _DEBUG:
@@ -27,7 +24,7 @@ def about_me(chat_id, args=None):
     logger.info("Creating About Me")
     if bot is None:
         raise ReferenceError("Cannot create AboutMe without Bot Context!")
-    bot.sendMessage(chat_id, helper.create_header(_VERSION))
+    bot.sendMessage(chat_id, header_helper.create_header(_VERSION))
 
 
 def show_debug(chat_id, args=None):
@@ -62,7 +59,7 @@ def handle_chat_message(msg):
     chat_id = str(chat_id)
     user_id = str(msg['from']['id'])
 
-    if user_id not in admins:
+    if user_id not in bot_helper.get_admins():
         logger.warning("Message from unknown User!")
         bot.sendMessage(chat_id, "I'm sorry, but my Daddy says im not allowed to speak to Strangers!")
         return
@@ -86,7 +83,7 @@ def handle_callback_query(msg):
 
     logger.info("New Callback Query! Query-ID: %s, Sender-ID: %s, Data: %s", query_id, from_id, query_id)
 
-    if from_id not in admins:
+    if from_id not in bot_helper.get_admins():
         logger.warning("Callback Query from unknown User!")
         bot.answerCallbackQuery(query_id, text="No Permission!")
         return
@@ -105,11 +102,10 @@ callback_functions = {}
 
 
 if __name__ == '__main__':
-    bot = helper.get_bot()
+    bot = bot_helper.get_bot()
 
     logger.debug("INIT Helper")
     manager = helper.get_module_manager()
-    admins = helper.get_admins()
 
     functions = {**manager.get_enabled_chat_functions(), **functions}
     debug_functions = {**manager.get_enabled_debug_chat_functions(), **debug_functions}
@@ -125,7 +121,7 @@ if __name__ == '__main__':
     logger.info('Listening ...')
 
     # Say Hello to our Admins!
-    helper.send_admins("I'm Back!", silent=True)
+    bot_helper.send_admins("I'm Back!", silent=True)
 
     # Keep the program running.
     while 1:

@@ -1,6 +1,6 @@
 import modules as mod
-import helper
 import logging
+from helpers import helper
 
 helper.config_logger(logging.DEBUG, to_File=False)
 
