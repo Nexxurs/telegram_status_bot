@@ -1,5 +1,6 @@
+#!/usr/bin/env python3
+
 import helper
-import sys
 import logging
 import argparse
 
