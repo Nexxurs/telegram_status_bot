@@ -6,6 +6,7 @@ from helpers import helper, executor as executor_helper
 _logger = logging.getLogger(__name__)
 _git_branch = None
 
+
 def get_git_branch():
     global _git_branch
     if _git_branch is None:
@@ -18,6 +19,7 @@ def get_git_branch():
 
     return _git_branch
 
+
 def create_header(version='No Version'):
     me = bot_helper.get_bot().getMe()
     string = ""
@@ -25,7 +27,7 @@ def create_header(version='No Version'):
     string = string + "##############################################################\n"
 
     model_proc = executor_helper.execute(str(helper.getBotRootPath() / 'scripts' / 'model.sh'))
-    if model_proc.returncode != 0:
+    if model_proc.returncode == 0:
         string = string + "   " + model_proc.stdout
     else:
         _logger.warning("Model Error: %s", model_proc.stderr)
