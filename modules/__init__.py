@@ -107,8 +107,8 @@ class ModuleManager:
         return res
 
     def get_module_by_name(self, name):
-        full_name = __package__+'.'+name
+        # full_name = __package__+'.'+  # Core Modules don't have a package --> search for full module name?
         for mod in self.module_list:
-            if mod.__module__ == full_name:
+            if mod.__module__ == name:
                 return mod
         return None
